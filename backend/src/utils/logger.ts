@@ -1,4 +1,10 @@
 import winston from 'winston';
+import { existsSync, mkdirSync } from 'fs';
+
+// Ensure logs directory exists
+if (!existsSync('logs')) {
+  mkdirSync('logs');
+}
 
 const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',

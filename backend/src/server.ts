@@ -46,7 +46,7 @@ app.set('io', io);
 app.use(`/api/${process.env.API_VERSION || 'v1'}`, routes);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 

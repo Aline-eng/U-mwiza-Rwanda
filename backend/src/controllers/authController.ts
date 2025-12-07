@@ -4,26 +4,28 @@ import prisma from '../config/database';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '../utils/jwt';
 import { AuthRequest } from '../middleware/auth';
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({ where: { email } });
     
     if (!user || !user.isActive) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: { code: 'AUTH_001', message: 'Invalid credentials' }
       });
+      return;
     }
 
     const isValidPassword = await bcrypt.compare(password, user.passwordHash);
     
     if (!isValidPassword) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: { code: 'AUTH_001', message: 'Invalid credentials' }
       });
+      return;
     }
 
     const payload = {
@@ -72,7 +74,7 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const refresh = async (req: Request, res: Response) => {
+export const refresh = async (req: Request, res: Response): Promise<void> => {
   try {
     const { refreshToken } = req.body;
 
@@ -83,10 +85,11 @@ export const refresh = async (req: Request, res: Response) => {
     });
 
     if (!storedToken || storedToken.expiresAt < new Date()) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: { code: 'AUTH_002', message: 'Invalid refresh token' }
       });
+      return;
     }
 
     const accessToken = generateAccessToken(decoded);
@@ -103,7 +106,7 @@ export const refresh = async (req: Request, res: Response) => {
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
     const { refreshToken } = req.body;
 
@@ -123,7 +126,7 @@ export const logout = async (req: Request, res: Response) => {
   }
 };
 
-export const changePassword = async (req: AuthRequest, res: Response) => {
+export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { currentPassword, newPassword } = req.body;
     const userId = req.user!.id;
@@ -131,19 +134,21 @@ export const changePassword = async (req: AuthRequest, res: Response) => {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: { code: 'NOT_FOUND', message: 'User not found' }
       });
+      return;
     }
 
     const isValidPassword = await bcrypt.compare(currentPassword, user.passwordHash);
     
     if (!isValidPassword) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
         error: { code: 'AUTH_001', message: 'Current password is incorrect' }
       });
+      return;
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);

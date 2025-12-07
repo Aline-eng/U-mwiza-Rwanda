@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Heart, Users, GraduationCap, HandHeart, ArrowRight } from 'lucide-react'
 
 export default function HomePage() {
   return (
@@ -12,7 +11,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <Heart className="h-8 w-8 text-primary-600" />
+              <span className="text-2xl">❤️</span>
               <span className="ml-2 text-xl font-bold text-gray-900">U'mwiza Rwanda</span>
             </div>
             <div className="hidden md:flex space-x-8">
@@ -50,7 +49,7 @@ export default function HomePage() {
               </p>
               <div className="flex gap-4">
                 <button className="bg-primary-600 text-white px-8 py-3 rounded-lg hover:bg-primary-700 transition flex items-center">
-                  Learn More <ArrowRight className="ml-2 h-5 w-5" />
+                  Learn More <span className="ml-2">→</span>
                 </button>
                 <button className="border-2 border-primary-600 text-primary-600 px-8 py-3 rounded-lg hover:bg-primary-50 transition">
                   Get Involved
@@ -89,17 +88,17 @@ export default function HomePage() {
               {
                 title: 'Mission',
                 description: 'To empower vulnerable families and children in Rwanda through sustainable support, education, and community development.',
-                icon: Heart
+                icon: '❤️'
               },
               {
                 title: 'Vision',
                 description: 'A Rwanda where every child has the opportunity to thrive, every family has hope, and every community flourishes.',
-                icon: Users
+                icon: '👥'
               },
               {
                 title: 'Values',
                 description: 'Compassion, Integrity, Empowerment, Community, and Sustainable Impact guide everything we do.',
-                icon: HandHeart
+                icon: '🤝'
               }
             ].map((item, index) => (
               <motion.div
@@ -110,7 +109,7 @@ export default function HomePage() {
                 transition={{ delay: index * 0.2 }}
                 className="bg-gray-50 p-8 rounded-xl hover:shadow-lg transition"
               >
-                <item.icon className="h-12 w-12 text-primary-600 mb-4" />
+                <div className="text-5xl mb-4">{item.icon}</div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">{item.title}</h3>
                 <p className="text-gray-600">{item.description}</p>
               </motion.div>
@@ -134,10 +133,10 @@ export default function HomePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { title: 'Family Sponsorship', icon: Users, color: 'primary' },
-              { title: 'Scholarships', icon: GraduationCap, color: 'secondary' },
-              { title: 'Volunteers', icon: HandHeart, color: 'primary' },
-              { title: 'Community Outreach', icon: Heart, color: 'secondary' }
+              { title: 'Family Sponsorship', icon: '👨‍👩‍👧‍👦', color: 'primary' },
+              { title: 'Scholarships', icon: '🎓', color: 'secondary' },
+              { title: 'Volunteers', icon: '🤝', color: 'primary' },
+              { title: 'Community Outreach', icon: '❤️', color: 'secondary' }
             ].map((program, index) => (
               <motion.div
                 key={index}
@@ -147,7 +146,7 @@ export default function HomePage() {
                 transition={{ delay: index * 0.1 }}
                 className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer"
               >
-                <program.icon className={`h-10 w-10 text-${program.color}-600 mb-4`} />
+                <div className="text-4xl mb-4">{program.icon}</div>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">{program.title}</h3>
                 <p className="text-gray-600 text-sm">Supporting families and children through comprehensive programs.</p>
               </motion.div>
@@ -197,7 +196,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                <Heart className="h-8 w-8 text-primary-400" />
+                <span className="text-2xl">❤️</span>
                 <span className="ml-2 text-xl font-bold">U'mwiza Rwanda</span>
               </div>
               <p className="text-gray-400">Transforming lives through compassion and support.</p>
