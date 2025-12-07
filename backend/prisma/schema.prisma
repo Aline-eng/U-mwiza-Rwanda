@@ -1,0 +1,580 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  firstName     String    @map("first_name")
+  lastName      String    @map("last_name")
+  role          Role
+  communityId   String?   @map("community_id")
+  phone         String?
+  avatarUrl     String?   @map("avatar_url")
+  isActive      Boolean   @default(true) @map("is_active")
+  lastLogin     DateTime? @map("last_login")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  community      Community?       @relation(fields: [communityId], references: [id])
+  refreshTokens  RefreshToken[]
+  notifications  Notification[]
+  tasks          Task[]           @relation("AssignedTasks")
+  assignedTasks  Task[]           @relation("CreatedTasks")
+  auditLogs      AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@index([communityId])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+model Community {
+  id             String   @id @default(uuid())
+  name           String
+  location       String
+  district       String?
+  sector         String?
+  cell           String?
+  village        String?
+  description    String?
+  staffId        String?  @map("staff_id")
+  latitude       Float?
+  longitude      Float?
+  totalFamilies  Int      @default(0) @map("total_families")
+  totalChildren  Int      @default(0) @map("total_children")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  users    User[]
+  families Family[]
+  events   Event[]
+
+  @@index([staffId])
+  @@index([district, sector])
+  @@map("communities")
+}
+
+model Family {
+  id                  String   @id @default(uuid())
+  communityId         String   @map("community_id")
+  familyCode          String   @unique @map("family_code")
+  fatherName          String?  @map("father_name")
+  fatherAge           Int?     @map("father_age")
+  fatherOccupation    String?  @map("father_occupation")
+  motherName          String?  @map("mother_name")
+  motherAge           Int?     @map("mother_age")
+  motherOccupation    String?  @map("mother_occupation")
+  guardianName        String?  @map("guardian_name")
+  guardianRelationship String? @map("guardian_relationship")
+  address             String?
+  phone               String?
+  totalChildren       Int      @default(0) @map("total_children")
+  housingType         String?  @map("housing_type")
+  incomeLevel         String?  @map("income_level")
+  status              FamilyStatus @default(ACTIVE)
+  enrollmentDate      DateTime @map("enrollment_date")
+  notes               String?
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  community   Community    @relation(fields: [communityId], references: [id])
+  children    Child[]
+  budgets     Budget[]
+  actionPlans ActionPlan[]
+
+  @@index([communityId])
+  @@index([familyCode])
+  @@index([status])
+  @@map("families")
+}
+
+model Child {
+  id                   String    @id @default(uuid())
+  familyId             String    @map("family_id")
+  childCode            String    @unique @map("child_code")
+  firstName            String    @map("first_name")
+  lastName             String    @map("last_name")
+  dateOfBirth          DateTime  @map("date_of_birth")
+  gender               Gender
+  photoUrl             String?   @map("photo_url")
+  isSponsored          Boolean   @default(false) @map("is_sponsored")
+  sponsorId            String?   @map("sponsor_id")
+  sponsorshipStartDate DateTime? @map("sponsorship_start_date")
+  gradeLevel           String?   @map("grade_level")
+  schoolName           String?   @map("school_name")
+  interests            String?
+  dreams               String?
+  specialNeeds         String?   @map("special_needs")
+  status               ChildStatus @default(ACTIVE)
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  family           Family             @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  sponsor          Sponsor?           @relation(fields: [sponsorId], references: [id])
+  healthRecords    HealthRecord[]
+  educationRecords EducationRecord[]
+  transactions     Transaction[]
+  letters          Letter[]
+
+  @@index([familyId])
+  @@index([sponsorId])
+  @@index([childCode])
+  @@index([status])
+  @@map("children")
+}
+
+model Sponsor {
+  id          String      @id @default(uuid())
+  sponsorCode String      @unique @map("sponsor_code")
+  firstName   String      @map("first_name")
+  lastName    String      @map("last_name")
+  email       String?
+  phone       String?
+  country     String?
+  address     String?
+  sponsorType SponsorType @map("sponsor_type")
+  startDate   DateTime    @map("start_date")
+  isActive    Boolean     @default(true) @map("is_active")
+  notes       String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  children     Child[]
+  transactions Transaction[]
+  letters      Letter[]
+
+  @@index([sponsorCode])
+  @@index([email])
+  @@map("sponsors")
+}
+
+model HealthRecord {
+  id           String           @id @default(uuid())
+  childId      String           @map("child_id")
+  recordDate   DateTime         @map("record_date")
+  recordType   HealthRecordType @map("record_type")
+  title        String
+  description  String?
+  diagnosis    String?
+  treatment    String?
+  medications  String?
+  hospitalName String?          @map("hospital_name")
+  doctorName   String?          @map("doctor_name")
+  followUpDate DateTime?        @map("follow_up_date")
+  documentUrl  String?          @map("document_url")
+  createdBy    String?          @map("created_by")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+
+  child Child @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([childId])
+  @@index([recordDate])
+  @@index([recordType])
+  @@map("health_records")
+}
+
+model EducationRecord {
+  id                   String   @id @default(uuid())
+  childId              String   @map("child_id")
+  academicYear         String   @map("academic_year")
+  term                 String
+  gradeLevel           String   @map("grade_level")
+  schoolName           String   @map("school_name")
+  attendancePercentage Float?   @map("attendance_percentage")
+  overallGrade         String?  @map("overall_grade")
+  overallPercentage    Float?   @map("overall_percentage")
+  rankInClass          Int?     @map("rank_in_class")
+  totalStudents        Int?     @map("total_students")
+  teacherName          String?  @map("teacher_name")
+  teacherComments      String?  @map("teacher_comments")
+  subjects             Json?
+  reportCardUrl        String?  @map("report_card_url")
+  achievements         String?
+  challenges           String?
+  createdBy            String?  @map("created_by")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  child Child @relation(fields: [childId], references: [id], onDelete: Cascade)
+
+  @@index([childId])
+  @@index([academicYear])
+  @@index([term])
+  @@map("education_records")
+}
+
+model Transaction {
+  id                String            @id @default(uuid())
+  transactionCode   String            @unique @map("transaction_code")
+  childId           String            @map("child_id")
+  sponsorId         String            @map("sponsor_id")
+  amount            Float
+  currency          String            @default("RWF")
+  transactionDate   DateTime          @map("transaction_date")
+  transactionType   TransactionType   @map("transaction_type")
+  status            TransactionStatus @default(PENDING)
+  paymentMethod     String?           @map("payment_method")
+  referenceNumber   String?           @map("reference_number")
+  notes             String?
+  confirmedBy       String?           @map("confirmed_by")
+  confirmedAt       DateTime?         @map("confirmed_at")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  child   Child   @relation(fields: [childId], references: [id])
+  sponsor Sponsor @relation(fields: [sponsorId], references: [id])
+
+  @@index([childId])
+  @@index([sponsorId])
+  @@index([transactionDate])
+  @@index([status])
+  @@map("transactions")
+}
+
+model Budget {
+  id             String       @id @default(uuid())
+  familyId       String       @map("family_id")
+  childId        String?      @map("child_id")
+  budgetPeriod   String       @map("budget_period")
+  totalAmount    Float        @map("total_amount")
+  currency       String       @default("RWF")
+  categories     Json
+  explanation    String
+  status         BudgetStatus @default(DRAFT)
+  submittedBy    String?      @map("submitted_by")
+  submittedAt    DateTime?    @map("submitted_at")
+  reviewedBy     String?      @map("reviewed_by")
+  reviewedAt     DateTime?    @map("reviewed_at")
+  reviewComments String?      @map("review_comments")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  family Family @relation(fields: [familyId], references: [id])
+
+  @@index([familyId])
+  @@index([childId])
+  @@index([status])
+  @@index([budgetPeriod])
+  @@map("budgets")
+}
+
+model ActionPlan {
+  id                    String           @id @default(uuid())
+  familyId              String           @map("family_id")
+  year                  Int
+  title                 String
+  goals                 Json
+  housingImprovements   String?          @map("housing_improvements")
+  educationImprovements String?          @map("education_improvements")
+  healthImprovements    String?          @map("health_improvements")
+  incomeImprovements    String?          @map("income_improvements")
+  communityInvolvement  String?          @map("community_involvement")
+  milestones            Json?
+  status                ActionPlanStatus @default(DRAFT)
+  progressPercentage    Int              @default(0) @map("progress_percentage")
+  createdBy             String?          @map("created_by")
+  approvedBy            String?          @map("approved_by")
+  approvedAt            DateTime?        @map("approved_at")
+  createdAt             DateTime         @default(now()) @map("created_at")
+  updatedAt             DateTime         @updatedAt @map("updated_at")
+
+  family Family @relation(fields: [familyId], references: [id])
+
+  @@index([familyId])
+  @@index([year])
+  @@index([status])
+  @@map("action_plans")
+}
+
+model Letter {
+  id                 String       @id @default(uuid())
+  childId            String       @map("child_id")
+  sponsorId          String       @map("sponsor_id")
+  direction          LetterDirection
+  letterType         LetterType   @map("letter_type")
+  content            String?
+  fileUrl            String?      @map("file_url")
+  thumbnailUrl       String?      @map("thumbnail_url")
+  language           String?
+  translatedContent  String?      @map("translated_content")
+  status             LetterStatus @default(PENDING)
+  sentDate           DateTime     @map("sent_date")
+  deliveredDate      DateTime?    @map("delivered_date")
+  readDate           DateTime?    @map("read_date")
+  handledBy          String?      @map("handled_by")
+  notes              String?
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+
+  child   Child   @relation(fields: [childId], references: [id])
+  sponsor Sponsor @relation(fields: [sponsorId], references: [id])
+
+  @@index([childId])
+  @@index([sponsorId])
+  @@index([direction])
+  @@index([status])
+  @@map("letters")
+}
+
+model Event {
+  id            String      @id @default(uuid())
+  title         String
+  description   String?
+  eventType     EventType   @map("event_type")
+  eventDate     DateTime    @map("event_date")
+  endDate       DateTime?   @map("end_date")
+  location      String?
+  communityId   String?     @map("community_id")
+  isPublic      Boolean     @default(false) @map("is_public")
+  coverImageUrl String?     @map("cover_image_url")
+  galleryUrls   Json?       @map("gallery_urls")
+  attendees     Int?
+  summary       String?
+  status        EventStatus @default(UPCOMING)
+  createdBy     String?     @map("created_by")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  community Community? @relation(fields: [communityId], references: [id])
+
+  @@index([eventDate])
+  @@index([communityId])
+  @@index([isPublic])
+  @@index([status])
+  @@map("events")
+}
+
+model Task {
+  id                 String       @id @default(uuid())
+  title              String
+  description        String?
+  taskType           TaskType     @map("task_type")
+  priority           TaskPriority @default(MEDIUM)
+  status             TaskStatus   @default(PENDING)
+  assignedTo         String       @map("assigned_to")
+  assignedBy         String?      @map("assigned_by")
+  relatedEntityType  String?      @map("related_entity_type")
+  relatedEntityId    String?      @map("related_entity_id")
+  dueDate            DateTime?    @map("due_date")
+  completedAt        DateTime?    @map("completed_at")
+  cancellationReason String?      @map("cancellation_reason")
+  adminComments      String?      @map("admin_comments")
+  createdAt          DateTime     @default(now()) @map("created_at")
+  updatedAt          DateTime     @updatedAt @map("updated_at")
+
+  assignedToUser User  @relation("AssignedTasks", fields: [assignedTo], references: [id])
+  assignedByUser User? @relation("CreatedTasks", fields: [assignedBy], references: [id])
+
+  @@index([assignedTo])
+  @@index([status])
+  @@index([dueDate])
+  @@index([taskType])
+  @@map("tasks")
+}
+
+model Notification {
+  id                String           @id @default(uuid())
+  userId            String           @map("user_id")
+  title             String
+  message           String
+  notificationType  NotificationType @map("notification_type")
+  priority          NotificationPriority @default(NORMAL)
+  isRead            Boolean          @default(false) @map("is_read")
+  actionUrl         String?          @map("action_url")
+  relatedEntityType String?          @map("related_entity_type")
+  relatedEntityId   String?          @map("related_entity_id")
+  readAt            DateTime?        @map("read_at")
+  createdAt         DateTime         @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([notificationType])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  oldValues  Json?    @map("old_values")
+  newValues  Json?    @map("new_values")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// Enums
+enum Role {
+  ADMIN
+  STAFF
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum FamilyStatus {
+  ACTIVE
+  INACTIVE
+  GRADUATED
+}
+
+enum ChildStatus {
+  ACTIVE
+  INACTIVE
+  GRADUATED
+}
+
+enum SponsorType {
+  INDIVIDUAL
+  FAMILY
+  ORGANIZATION
+}
+
+enum HealthRecordType {
+  CHECKUP
+  VACCINATION
+  ILLNESS
+  HOSPITAL_VISIT
+  CHRONIC_CONDITION
+}
+
+enum TransactionType {
+  SPONSORSHIP
+  DONATION
+  SCHOLARSHIP
+  EMERGENCY
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  DISBURSED
+  CANCELLED
+}
+
+enum BudgetStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  DISBURSED
+}
+
+enum ActionPlanStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum LetterDirection {
+  TO_CHILD
+  FROM_CHILD
+}
+
+enum LetterType {
+  TEXT
+  VIDEO
+  PHOTO
+  AUDIO
+}
+
+enum LetterStatus {
+  PENDING
+  DELIVERED
+  READ
+  REPLIED
+}
+
+enum EventType {
+  COMMUNITY
+  TRAINING
+  CELEBRATION
+  VISIT
+  OTHER
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum TaskType {
+  BUDGET
+  REPORT
+  EDUCATION_RECORD
+  HEALTH_RECORD
+  LETTER_RESPONSE
+  ACTION_PLAN
+  OTHER
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  OVERDUE
+}
+
+enum NotificationType {
+  TASK
+  LETTER
+  ALERT
+  APPROVAL
+  SYSTEM
+}
+
+enum NotificationPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
