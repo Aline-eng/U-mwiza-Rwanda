@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "U'mwiza Rwanda - Supporting Families, Transforming Lives",
   description: 'A humanitarian organization supporting poor families, connecting sponsors, and providing scholarships to bright but disadvantaged children in Rwanda.',
   keywords: ['Rwanda', 'humanitarian', 'sponsorship', 'education', 'charity'],
+  
 }
 
 export default function RootLayout({
