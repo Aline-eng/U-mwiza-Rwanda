@@ -200,12 +200,12 @@ Access the application:
 After seeding the database:
 ```
 Admin:
-Email: admin@umwiza.org
-Password: admin123
+Email: aadmin@umwiza.org
+Password: admminn123!
 
 Staff:
-Email: staff@umwiza.org
-Password: staff123
+Email: sstaff@umwiza.org
+Password: ssttaff123!
 ```
 
 **⚠️ Change these credentials immediately in production!**
