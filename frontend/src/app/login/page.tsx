@@ -2,16 +2,34 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Mail, Lock, Shield } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Mail, Lock, Shield, AlertCircle } from 'lucide-react'
+import { login } from '@/lib/auth'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log('Login attempt:', { email, password })
+    setError('')
+    setLoading(true)
+
+    const user = login(email, password)
+    
+    if (user) {
+      if (user.role === 'ADMIN') {
+        router.push('/dashboard/admin')
+      } else {
+        router.push('/dashboard/staff')
+      }
+    } else {
+      setError('Invalid email or password')
+      setLoading(false)
+    }
   }
 
   return (
@@ -60,6 +78,13 @@ export default function LoginPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Error Message */}
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="text-sm">{error}</span>
+                </div>
+              )}
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
@@ -101,9 +126,10 @@ export default function LoginPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-sky-600 text-white py-3 rounded-lg hover:bg-sky-700 transition font-semibold text-lg shadow-lg hover:shadow-xl"
+                disabled={loading}
+                className="w-full bg-sky-600 text-white py-3 rounded-lg hover:bg-sky-700 transition font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Login Securely
+                {loading ? 'Logging in...' : 'Login Securely'}
               </button>
             </form>
 
