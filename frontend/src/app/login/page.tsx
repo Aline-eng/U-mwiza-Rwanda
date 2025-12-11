@@ -36,7 +36,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Left Side - Image with Overlay (Desktop Only) */}
       <div className="hidden lg:flex lg:w-1/2 relative">
-        <div className="absolute inset-0 bg-sky-600/90 z-10"></div>
+        <div className="absolute inset-0 bg-green-400/90 z-10"></div>
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -48,10 +48,10 @@ export default function LoginPage() {
           <h2 className="text-4xl font-bold mb-6">
             Making a Difference Together
           </h2>
-          <p className="text-xl text-sky-100 italic">
+          <p className="text-xl text-green-100 italic">
             "Every family we support is a step towards a brighter Rwanda."
           </p>
-          <p className="mt-4 text-sky-200">— U'mwiza Rwanda Team</p>
+          <p className="mt-4 text-green-200">— U'mwiza Rwanda Team</p>
         </div>
       </div>
 
@@ -60,7 +60,7 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Logo for Mobile */}
           <div className="lg:hidden text-center mb-8">
-            <Link href="/" className="text-3xl font-bold text-sky-600">
+            <Link href="/" className="text-3xl font-bold text-green-800">
               U'mwiza Rwanda
             </Link>
           </div>
@@ -98,7 +98,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full pl-11 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
+                    className="w-full pl-11 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
                     placeholder="staff@umwizarwanda.org"
                   />
                 </div>
@@ -127,7 +127,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-sky-600 text-white py-3 rounded-lg hover:bg-sky-700 transition font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Logging in...' : 'Login Securely'}
               </button>
@@ -137,14 +137,14 @@ export default function LoginPage() {
             <div className="mt-6 text-center">
               <p className="text-sm text-slate-600">
                 Forgot your credentials?{' '}
-                <span className="text-sky-600 font-medium">
+                <span className="text-green-400 font-medium">
                   Contact Admin to reset credentials
                 </span>
               </p>
             </div>
 
             {/* Security Notice */}
-            <div className="mt-8 p-4 bg-sky-50 rounded-lg border border-sky-200">
+            <div className="mt-8 p-4 bg-green-50 rounded-lg border border-green-200">
               <p className="text-xs text-slate-600 text-center">
                 🔒 This is a secure portal. All login attempts are monitored and logged.
               </p>
@@ -155,7 +155,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <Link 
               href="/" 
-              className="text-slate-600 hover:text-sky-600 transition text-sm"
+              className="text-slate-600 hover:text-green-600 transition text-sm"
             >
               ← Back to Homepage
             </Link>
