@@ -159,8 +159,12 @@ export default function HomePage() {
           >
             <p className="text-lg text-gray-600 mb-8 font-medium">Ready to make a lasting impact?</p>
             <motion.button
+              type='button'
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() =>
+                window.open("https://www.unbound.org/about/approach", "_blank", "noopener,noreferrer")
+              }
               className="btn-primary text-lg px-10 py-5"
             >
               Start Your Journey Today

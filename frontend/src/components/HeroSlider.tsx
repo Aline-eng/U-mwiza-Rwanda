@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Users, BookOpen, ArrowRight } from 'lucide-react'
+import { link } from 'fs'
 
 const slides = [
   {
@@ -11,6 +12,7 @@ const slides = [
     subtitle: 'Transforming lives through education, healthcare, and unwavering support',
     keywords: 'children, rwanda, hope',
     cta: 'Become a Sponsor',
+    link: 'https://www.unbound.org/how-sponsorship-works',
     icon: Heart
   },
   {
@@ -19,6 +21,7 @@ const slides = [
     subtitle: 'Building sustainable futures with dignity, respect, and lasting partnerships',
     keywords: 'families, community, growth',
     cta: 'Join Our Community',
+    link: 'https://www.unbound.org/about',
     icon: Users
   },
   {
@@ -27,6 +30,7 @@ const slides = [
     subtitle: 'Empowering bright minds to break cycles of poverty and create change',
     keywords: 'education, opportunity, future',
     cta: 'Support Education',
+    link: 'https://www.unbound.org/get-involved/school-partnerships',
     icon: BookOpen
   }
 ]
@@ -100,8 +104,12 @@ export default function HeroSlider() {
             </motion.button>
 
             <motion.button
+              type='button'
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              onClick={() =>
+                window.open("https://www.unbound.org/about", "_blank", "noopener,noreferrer")
+              }
               className="glass-dark border-2 border-white/40 text-white px-10 py-5 rounded-xl font-heading font-semibold text-lg hover:bg-white/20 transition-smooth"
             >
               Learn Our Story

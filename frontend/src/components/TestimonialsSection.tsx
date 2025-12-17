@@ -100,8 +100,12 @@ export default function TestimonialsSection() {
         >
           <p className="text-gray-600 mb-6">Want to be part of these success stories?</p>
           <motion.button
+            type='button'
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={() =>
+              window.open("https://www.unbound.org/about/approach", "_blank", "noopener,noreferrer")
+            }
             className="gradient-primary text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-2xl hover-lift"
           >
             Start Your Journey Today
