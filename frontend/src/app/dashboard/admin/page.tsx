@@ -1,11 +1,13 @@
 'use client'
 
 import StatCard from '@/components/dashboard/StatCard'
+import ProtectedRoute from '@/components/dashboard/ProtectedRoute'
 import { Users, Heart, CheckCircle, AlertTriangle, TrendingUp, Activity } from 'lucide-react'
 
 export default function AdminDashboard() {
   return (
-    <div className="space-y-8">
+    <ProtectedRoute allowedRoles={['ADMIN']}>
+      <div className="space-y-8">
       <div className="gradient-primary rounded-2xl p-8 md:p-10 text-white shadow-charity-xl">
         <h1 className="text-4xl font-heading font-bold mb-3">Admin Dashboard</h1>
         <p className="text-white/90 text-lg">System overview and management</p>
@@ -126,7 +128,8 @@ export default function AdminDashboard() {
             </div>
           ))}
         </div>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }

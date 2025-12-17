@@ -163,7 +163,7 @@ export default function HomePage() {
               whileTap={{ scale: 0.95 }}
               className="btn-primary text-lg px-10 py-5"
             >
-              Get Involved Today
+              Start Your Journey Today
             </motion.button>
           </motion.div>
         </div>

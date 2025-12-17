@@ -2,29 +2,86 @@
 
 import { useEffect, useState } from 'react'
 import StatCard from '@/components/dashboard/StatCard'
+import ProtectedRoute from '@/components/dashboard/ProtectedRoute'
 import { Heart, FileText, Activity, Mail, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
+import { apiService } from '@/services/api'
+
+interface DashboardData {
+  user: {
+    name: string
+    community: string
+  }
+  stats: {
+    totalChildren: number
+    pendingBudgets: number
+    healthAlerts: number
+    newLetters: number
+  }
+  recentActivity: any[]
+  pendingTasks: any[]
+}
 
 export default function StaffDashboard() {
   const [user, setUser] = useState<any>(null)
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     setUser(getCurrentUser())
+    loadDashboardData()
   }, [])
+
+  const loadDashboardData = async () => {
+    try {
+      setLoading(true)
+      // Use mock data for now - will connect to real API when backend auth is ready
+      const mockData: DashboardData = {
+        user: {
+          name: getCurrentUser()?.name || 'John Doe',
+          community: getCurrentUser()?.community || 'Kigali Village'
+        },
+        stats: {
+          totalChildren: 45,
+          pendingBudgets: 2,
+          healthAlerts: 1,
+          newLetters: 8
+        },
+        recentActivity: [],
+        pendingTasks: []
+      }
+      setDashboardData(mockData)
+    } catch (error) {
+      console.error('Error loading dashboard:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <ProtectedRoute allowedRoles={['STAFF']}>
+        <div className="flex items-center justify-center min-h-96">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1D3557]"></div>
+        </div>
+      </ProtectedRoute>
+    )
+  }
   return (
-    <div className="space-y-6">
+    <ProtectedRoute allowedRoles={['STAFF']}>
+      <div className="space-y-6">
       {/* Welcome Header */}
       <div className="bg-gradient-to-r from-[#1D3557] to-[#2A9D8F] rounded-xl p-8 text-white">
-        <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.name?.split(' ')[0] || 'User'}! 👋</h1>
-        <p className="text-white/80">Here's what's happening in {user?.community || 'your community'} today</p>
+        <h1 className="text-3xl font-bold mb-2">Welcome back, {dashboardData?.user.name?.split(' ')[0] || user?.name?.split(' ')[0] || 'User'}! 👋</h1>
+        <p className="text-white/80">Here's what's happening in {dashboardData?.user.community || user?.community || 'your community'} today</p>
       </div>
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Sponsored Children" value={45} icon={Heart} trend="+3 this month" color="blue" />
-        <StatCard title="Pending Budgets" value={2} icon={FileText} color="yellow" />
-        <StatCard title="Health Alerts" value={1} icon={Activity} color="red" />
-        <StatCard title="New Letters" value={8} icon={Mail} trend="Awaiting response" color="green" />
+        <StatCard title="Sponsored Children" value={dashboardData?.stats.totalChildren || 45} icon={Heart} trend="+3 this month" color="blue" />
+        <StatCard title="Pending Budgets" value={dashboardData?.stats.pendingBudgets || 2} icon={FileText} color="yellow" />
+        <StatCard title="Health Alerts" value={dashboardData?.stats.healthAlerts || 1} icon={Activity} color="red" />
+        <StatCard title="New Letters" value={dashboardData?.stats.newLetters || 8} icon={Mail} trend="Awaiting response" color="green" />
       </div>
 
       {/* Community Profile Card */}
@@ -33,7 +90,7 @@ export default function StaffDashboard() {
         <div className="flex items-start gap-4">
           <img src="/api/placeholder/100/100" alt="Community" className="w-24 h-24 rounded-lg object-cover" />
           <div className="flex-1">
-            <h3 className="font-semibold text-lg text-gray-900">{user?.community || 'Kigali Village'}</h3>
+            <h3 className="font-semibold text-lg text-gray-900">{dashboardData?.user.community || user?.community || 'Kigali Village'}</h3>
             <p className="text-sm text-gray-600 mb-3">Eastern Province, Rwanda</p>
             <div className="grid grid-cols-3 gap-4">
               <div>
@@ -116,7 +173,8 @@ export default function StaffDashboard() {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }

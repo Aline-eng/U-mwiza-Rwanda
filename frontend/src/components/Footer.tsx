@@ -11,7 +11,8 @@ export default function Footer() {
       <div className="absolute inset-0 bg-pattern-grid opacity-10"></div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_0.9fr_1.3fr] gap-x-6 gap-y-8">
+
           {/* Column 1 - Brand */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -30,7 +31,8 @@ export default function Footer() {
             </div>
             </div>
             <p className="text-gray-300 mb-6 leading-relaxed text-sm">
-              Empowering families, building futures together. Every child deserves hope, every family deserves dignity and support.
+              Empowering families, building futures together. <br/>
+              Every child deserves hope, every family deserves dignity and support.
             </p>
             <div className="flex gap-4">
               <motion.a

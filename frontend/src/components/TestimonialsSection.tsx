@@ -6,9 +6,9 @@ import { Star, Quote } from 'lucide-react'
 const testimonials = [
   {
     name: 'Marie Claire',
-    role: 'Mother of 3',
+    role: 'Mother of a child',
     location: 'Kigali, Rwanda',
-    image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&q=80',
+    image: 'https://images.pexels.com/photos/1427035/pexels-photo-1427035.jpeg',
     content: 'U\'mwiza Rwanda changed our lives. My children now have access to education and healthcare that I could never afford. The sponsorship program gave us hope when we had none.',
     rating: 5
   },
