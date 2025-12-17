@@ -35,44 +35,49 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Image with Overlay (Desktop Only) */}
-      <div className="hidden lg:flex lg:w-1/2 relative">
-        <div className="absolute inset-0 bg-green-400/90 z-10"></div>
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+        <div className="absolute inset-0 gradient-hero-overlay z-10"></div>
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center scale-105 hover:scale-100 transition-transform duration-700"
           style={{
             backgroundImage: 'url(https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&q=80)'
           }}
         ></div>
-        <div className="relative z-20 flex flex-col justify-center px-12 text-white">
-          <Shield className="h-16 w-16 mb-6" />
-          <h2 className="text-4xl font-bold mb-6">
-            Making a Difference Together
+        <div className="relative z-20 flex flex-col justify-center px-16 text-white">
+          <div className="glass-dark p-4 rounded-2xl w-fit mb-8">
+            <Shield className="h-16 w-16" />
+          </div>
+          <h2 className="text-5xl font-heading font-bold mb-6 leading-tight">
+            Making a Difference<br />Together
           </h2>
-          <p className="text-xl text-green-100 italic">
+          <p className="text-xl text-white/90 italic leading-relaxed mb-2">
             "Every family we support is a step towards a brighter Rwanda."
           </p>
-          <p className="mt-4 text-green-200">— U'mwiza Rwanda Team</p>
+          <p className="text-lg text-white/70 font-medium">— U'mwiza Rwanda Team</p>
         </div>
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 bg-slate-50">
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12 bg-gray-50">
         <div className="w-full max-w-md">
           {/* Logo for Mobile */}
-          <div className="lg:hidden text-center mb-8">
-            <Link href="/" className="text-3xl font-bold text-green-800">
-              U'mwiza Rwanda
+          <div className="lg:hidden text-center mb-10">
+            <Link href="/" className="inline-flex flex-col items-center gap-2">
+              <img src="/logo.png" alt="U'mwiza Rwanda Logo" className="h-16 w-auto" />
+              <span className="text-3xl font-heading font-bold text-gradient-primary">
+                U'mwiza Rwanda
+              </span>
             </Link>
           </div>
 
           {/* Form Container */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">
-                Staff Portal Access
+          <div className="bg-white rounded-3xl shadow-charity-xl p-8 md:p-10 border border-gray-100">
+            <div className="text-center mb-10">
+              <h1 className="text-3xl md:text-4xl font-heading font-bold text-gray-900 mb-3">
+                Staff Portal
               </h1>
-              <p className="text-slate-600 flex items-center justify-center gap-2">
-                <Shield className="h-4 w-4" />
+              <p className="text-gray-600 flex items-center justify-center gap-2 font-medium">
+                <Shield className="h-5 w-5 text-primary-500" />
                 Authorized Personnel Only
               </p>
             </div>
@@ -80,25 +85,25 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Error Message */}
               {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-                  <AlertCircle className="h-4 w-4" />
-                  <span className="text-sm">{error}</span>
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 animate-slide-down">
+                  <AlertCircle className="h-5 w-5 flex-shrink-0" />
+                  <span className="text-sm font-medium">{error}</span>
                 </div>
               )}
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="w-full pl-11 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                    className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-smooth text-gray-900"
                     placeholder="staff@umwizarwanda.org"
                   />
                 </div>
@@ -106,18 +111,18 @@ export default function LoginPage() {
 
               {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <input
                     id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="w-full pl-11 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition"
+                    className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-smooth text-gray-900"
                     placeholder="••••••••"
                   />
                 </div>
@@ -127,35 +132,36 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition font-semibold text-lg shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full btn-primary py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Logging in...' : 'Login Securely'}
               </button>
             </form>
 
             {/* Forgot Password */}
-            <div className="mt-6 text-center">
-              <p className="text-sm text-slate-600">
+            <div className="mt-8 text-center">
+              <p className="text-sm text-gray-600">
                 Forgot your credentials?{' '}
-                <span className="text-green-400 font-medium">
-                  Contact Admin to reset credentials
+                <span className="text-primary-600 font-semibold">
+                  Contact Admin
                 </span>
               </p>
             </div>
 
             {/* Security Notice */}
-            <div className="mt-8 p-4 bg-green-50 rounded-lg border border-green-200">
-              <p className="text-xs text-slate-600 text-center">
-                🔒 This is a secure portal. All login attempts are monitored and logged.
+            <div className="mt-8 p-4 bg-primary-50 rounded-xl border border-primary-200">
+              <p className="text-xs text-gray-600 text-center font-medium flex items-center justify-center gap-2">
+                <Shield className="h-4 w-4 text-primary-600" />
+                Secure portal • All login attempts are monitored
               </p>
             </div>
           </div>
 
           {/* Back to Home */}
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link 
               href="/" 
-              className="text-slate-600 hover:text-green-600 transition text-sm"
+              className="text-gray-600 hover:text-primary-600 transition-smooth text-sm font-medium inline-flex items-center gap-2"
             >
               ← Back to Homepage
             </Link>

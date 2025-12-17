@@ -8,23 +8,27 @@ interface StatCardProps {
   color?: 'blue' | 'yellow' | 'green' | 'red'
 }
 
-const colorClasses = {
-  blue: 'bg-blue-100 text-blue-600',
+const colorClasses: Record<'blue' | 'yellow' | 'green' | 'red', string> = {
+  blue: 'bg-primary-100 text-primary-600',
   yellow: 'bg-yellow-100 text-yellow-600',
-  green: 'bg-green-100 text-green-600',
+  green: 'bg-secondary-100 text-secondary-600',
   red: 'bg-red-100 text-red-600',
 }
 
 export default function StatCard({ title, value, icon: Icon, trend, color = 'blue' }: StatCardProps) {
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition">
+    <div className="bg-white rounded-xl p-6 shadow-charity border border-gray-100 hover-lift transition-smooth group">
       <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-gray-600 mb-1">{title}</p>
-          <p className="text-3xl font-bold text-gray-900">{value}</p>
-          {trend && <p className="text-xs text-green-600 mt-2">{trend}</p>}
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">{title}</p>
+          <p className="text-4xl font-heading font-bold text-gray-900 mb-1">{value}</p>
+          {trend && (
+            <p className="text-xs font-semibold text-secondary-600 bg-secondary-50 inline-block px-2 py-1 rounded-full mt-2">
+              {trend}
+            </p>
+          )}
         </div>
-        <div className={`p-3 rounded-lg ${colorClasses[color]}`}>
+        <div className={`p-4 rounded-xl ${colorClasses[color]} group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
           <Icon className="h-6 w-6" />
         </div>
       </div>

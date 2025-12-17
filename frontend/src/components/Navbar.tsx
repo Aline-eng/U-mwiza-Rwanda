@@ -17,33 +17,33 @@ export default function Navbar() {
   ]
 
   return (
-    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-lg border-b border-orange-100">
+    <nav className="sticky top-0 z-50 glass shadow-charity border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div>
-              <img src='/logo.png' />
+          <Link href="/" className="flex items-center gap-3 group transition-smooth">
+            <div className="relative">
+              <img src='/logo.png' alt="U'mwiza Rwanda Logo" className="h-12 w-auto" />
             </div>
             
             <div>
-              <span className="text-2xl font-bold bg-gradient-to-r  from-green-700 to-green-900 bg-clip-text text-transparent">
+              <span className="text-2xl font-heading font-bold text-gradient-primary">
                 U'mwiza Rwanda
               </span>
-              <div className="text-xs text-gray-500 -mt-1">Hope • Love • Change</div>
+              <div className="text-xs text-gray-500 font-medium tracking-wide">Hope • Love • Change</div>
             </div>
           </Link>
 
           {/* Desktop Links */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex items-center space-x-1">
             {links.map((link) => (
               <a
                 key={link.name}
                 href={link.href}
-                className="text-gray-700 hover:text-green-600 transition-colors font-medium relative group"
+                className="text-gray-700 hover:text-primary-600 transition-smooth font-medium relative group px-4 py-2 rounded-lg hover:bg-primary-50"
               >
                 {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-500 to-green-600 group-hover:w-full transition-all duration-300"></span>
+                <span className="absolute bottom-0 left-4 right-4 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
               </a>
             ))}
           </div>
@@ -51,15 +51,17 @@ export default function Navbar() {
           {/* Login Button */}
           <Link
             href="/login"
-            className="hidden md:block gradient-primary text-white px-6 py-2.5 rounded-lg hover:shadow-lg transition-all duration-200 font-medium hover-lift"
+            className="hidden md:flex items-center gap-2 btn-primary"
           >
-            Staff Login
+            <Heart className="h-4 w-4" />
+            Staff Portal
           </Link>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-gray-700 hover:text-green-600 transition-colors p-2"
+            className="md:hidden text-gray-700 hover:text-primary-600 transition-smooth p-2 rounded-lg hover:bg-primary-50"
+            aria-label="Toggle menu"
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -73,16 +75,16 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="md:hidden overflow-hidden bg-white border-t border-orange-100 shadow-lg"
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            className="md:hidden overflow-hidden glass border-t border-gray-100"
           >
-            <div className="px-4 py-4 space-y-3">
+            <div className="px-4 py-6 space-y-2">
               {links.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
                   onClick={() => setIsOpen(false)}
-                  className="block text-gray-700 hover:text-red-600 transition-colors font-medium py-3 px-2 rounded-lg hover:bg-orange-50"
+                  className="block text-gray-700 hover:text-primary-600 transition-smooth font-medium py-3 px-4 rounded-lg hover:bg-primary-50"
                 >
                   {link.name}
                 </a>
@@ -90,9 +92,10 @@ export default function Navbar() {
               <Link
                 href="/login"
                 onClick={() => setIsOpen(false)}
-                className="block w-full text-center gradient-primary text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-200 font-medium mt-4"
+                className="flex items-center justify-center gap-2 w-full btn-primary mt-4"
               >
-                Join Our Mission
+                <Heart className="h-4 w-4" />
+                Staff Portal
               </Link>
             </div>
           </motion.div>

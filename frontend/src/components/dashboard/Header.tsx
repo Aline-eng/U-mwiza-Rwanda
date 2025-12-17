@@ -21,19 +21,19 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
   }
 
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-gray-200 px-4 lg:px-8 py-4">
+    <header className="sticky top-0 z-30 glass border-b border-gray-200 px-4 lg:px-8 py-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button onClick={onMenuClick} className="lg:hidden">
             <Menu className="h-6 w-6 text-gray-600" />
           </button>
           
-          <div className="hidden md:flex items-center gap-2 bg-gray-100 rounded-lg px-4 py-2 w-96">
-            <Search className="h-5 w-5 text-gray-400" />
+          <div className="hidden md:flex items-center gap-2 bg-gray-50 rounded-lg px-4 py-2.5 w-96 border border-gray-200 focus-within:border-primary-300 focus-within:ring-2 focus-within:ring-primary-100 transition-smooth">
+            <Search className="h-5 w-5 text-gray-400 flex-shrink-0" />
             <input
               type="text"
               placeholder="Search children, families, tasks..."
-              className="bg-transparent outline-none w-full text-sm"
+              className="bg-transparent outline-none w-full text-sm text-gray-700 placeholder-gray-400"
             />
           </div>
         </div>
@@ -41,22 +41,24 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
         <div className="flex items-center gap-4">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2 hover:bg-gray-100 rounded-lg transition"
+            className="relative p-2 hover:bg-gray-100 rounded-lg transition-smooth"
+            aria-label="Notifications"
           >
             <Bell className="h-5 w-5 text-gray-600" />
-            <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
+            <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-error rounded-full animate-pulse"></span>
           </button>
 
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-3 pl-4 border-l border-gray-200 hover:bg-gray-50 rounded-lg p-2 transition"
+              className="flex items-center gap-3 pl-4 border-l border-gray-200 hover:bg-gray-50 rounded-lg p-2 transition-smooth"
+              aria-label="User menu"
             >
               <div className="text-right hidden sm:block">
-                <p className="text-sm font-medium text-gray-900">{user?.name || 'User'}</p>
-                <p className="text-xs text-gray-500">{user?.role === 'ADMIN' ? 'Administrator' : 'Staff Member'}</p>
+                <p className="text-sm font-semibold text-gray-900">{user?.name || 'User'}</p>
+                <p className="text-xs text-gray-500 font-medium">{user?.role === 'ADMIN' ? 'Administrator' : 'Staff Member'}</p>
               </div>
-              <div className="h-10 w-10 bg-[#2A9D8F] rounded-full flex items-center justify-center">
+              <div className="h-10 w-10 gradient-secondary rounded-full flex items-center justify-center shadow-md">
                 <User className="h-5 w-5 text-white" />
               </div>
             </button>

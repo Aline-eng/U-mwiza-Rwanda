@@ -6,13 +6,9 @@ import { motion } from 'framer-motion'
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-green-900 to-gray-900 text-white relative overflow-hidden">
+    <footer className="bg-gradient-to-br from-primary-900 via-primary-800 to-gray-900 text-white relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 w-32 h-32 border border-white rounded-full"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 border border-white rounded-full"></div>
-        <div className="absolute bottom-20 left-1/4 w-20 h-20 border border-white rounded-full"></div>
-      </div>
+      <div className="absolute inset-0 bg-pattern-grid opacity-10"></div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -26,35 +22,44 @@ export default function Footer() {
               
                 <img src='/logo.png' />
               
-              <div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-green-700 to-green-900 bg-clip-text text-transparent">
-                  U'mwiza Rwanda
-                </h2>
-                <div className="text-xs text-gray-400">Hope • Love • Change</div>
-              </div>
+            <div>
+              <h2 className="text-2xl font-heading font-bold text-white">
+                U'mwiza Rwanda
+              </h2>
+              <div className="text-xs text-gray-300 font-medium tracking-wide">Hope • Love • Change</div>
             </div>
-            <p className="text-gray-300 mb-6 leading-relaxed">
-              Empowering families, building futures together. Every child deserves hope, every family deserves support.
+            </div>
+            <p className="text-gray-300 mb-6 leading-relaxed text-sm">
+              Empowering families, building futures together. Every child deserves hope, every family deserves dignity and support.
             </p>
             <div className="flex gap-4">
               <motion.a
                 whileHover={{ scale: 1.1 }}
-                href="#https://www.facebook.com/sponsorachild"
-                className="p-2 bg-white/10 rounded-lg hover:bg-green-500 transition-all duration-200"
+                href="https://www.facebook.com/sponsorachild"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white/10 rounded-lg hover:bg-secondary-500 transition-smooth"
+                aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
               </motion.a>
               <motion.a
                 whileHover={{ scale: 1.1 }}
-                href="#https://www.instagram.com/accounts/login/?next=/unboundorg/"
-                className="p-2 bg-white/10 rounded-lg hover:bg-green-500 transition-all duration-200"
+                href="https://www.instagram.com/unboundorg/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white/10 rounded-lg hover:bg-secondary-500 transition-smooth"
+                aria-label="Instagram"
               >
                 <Instagram className="h-5 w-5" />
               </motion.a>
               <motion.a
                 whileHover={{ scale: 1.1 }}
-                href="#https://twitter.com/unboundorg"
-                className="p-2 bg-white/10 rounded-lg hover:bg-green-500 transition-all duration-200"
+                href="https://twitter.com/unboundorg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white/10 rounded-lg hover:bg-secondary-500 transition-smooth"
+                aria-label="Twitter"
               >
                 <Twitter className="h-5 w-5" />
               </motion.a>
@@ -68,7 +73,7 @@ export default function Footer() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
           >
-            <h4 className="font-bold text-white mb-6">Quick Links</h4>
+            <h4 className="font-heading font-bold text-white mb-6">Quick Links</h4>
             <ul className="space-y-3 text-sm">
               {[
                 { name: 'Home', href: '#home' },
@@ -94,7 +99,7 @@ export default function Footer() {
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
           >
-            <h4 className="font-bold text-white mb-6">Get in Touch</h4>
+            <h4 className="font-heading font-bold text-white mb-6">Get in Touch</h4>
             <div className="space-y-4 text-sm">
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
@@ -127,7 +132,7 @@ export default function Footer() {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            <h4 className="font-bold text-white mb-6">Stay Connected</h4>
+            <h4 className="font-heading font-bold text-white mb-6">Stay Connected</h4>
             <p className="text-gray-300 mb-4 text-sm">Subscribe for updates on our work and success stories</p>
             <div className="space-y-3">
               <div className="flex gap-2">
@@ -139,7 +144,7 @@ export default function Footer() {
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="gradient-primary px-4 py-3 rounded-lg hover:shadow-lg transition-all duration-200 font-medium whitespace-nowrap"
+                  className="gradient-secondary px-5 py-3 rounded-lg hover:shadow-lg transition-smooth font-semibold whitespace-nowrap"
                 >
                   Subscribe
                 </motion.button>

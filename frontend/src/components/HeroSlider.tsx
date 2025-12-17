@@ -42,7 +42,7 @@ export default function HeroSlider() {
   }, [])
 
   return (
-    <section id="home" className="relative h-[90vh] overflow-hidden">
+    <section id="home" className="relative h-[92vh] overflow-hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSlide}
@@ -56,8 +56,8 @@ export default function HeroSlider() {
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: `url(${slides[currentSlide].image})` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-green-900/40 to-green-900/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+          <div className="absolute inset-0 gradient-hero-overlay" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         </motion.div>
       </AnimatePresence>
 
@@ -73,36 +73,36 @@ export default function HeroSlider() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.6, duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/20"
+            className="inline-flex items-center gap-2 glass-dark rounded-full px-5 py-2.5 mb-8 border border-white/20"
           >
-            {React.createElement(slides[currentSlide].icon, { className: "h-5 w-5 text-orange-300" })}
-            <span className="text-orange-200 font-medium text-sm uppercase tracking-wide">
+            {React.createElement(slides[currentSlide].icon, { className: "h-5 w-5 text-accent-300" })}
+            <span className="text-white/90 font-semibold text-sm uppercase tracking-wider">
               {slides[currentSlide].keywords}
             </span>
           </motion.div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold text-white mb-6 leading-[1.1] tracking-tight">
             {slides[currentSlide].title}
           </h1>
 
-          <p className="text-xl md:text-2xl text-green-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-white/90 mb-10 max-w-3xl mx-auto leading-relaxed font-medium">
             {slides[currentSlide].subtitle}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="gradient-primary text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-2xl hover-lift flex items-center gap-2 group"
+              className="gradient-primary text-white px-10 py-5 rounded-xl font-heading font-bold text-lg shadow-charity-xl hover-lift flex items-center gap-3 group"
             >
               {slides[currentSlide].cta}
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform duration-300" />
             </motion.button>
 
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-white/20 transition-all duration-200 hover-lift"
+              className="glass-dark border-2 border-white/40 text-white px-10 py-5 rounded-xl font-heading font-semibold text-lg hover:bg-white/20 transition-smooth"
             >
               Learn Our Story
             </motion.button>
@@ -111,15 +111,16 @@ export default function HeroSlider() {
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-2.5 z-20">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
             className={`transition-all duration-300 rounded-full ${
               index === currentSlide
-                ? 'bg-orange-400 w-12 h-3 shadow-lg'
-                : 'bg-white/40 w-3 h-3 hover:bg-white/60'
+                ? 'bg-white w-12 h-3 shadow-lg'
+                : 'bg-white/50 w-3 h-3 hover:bg-white/70'
             }`}
           />
         ))}
@@ -127,12 +128,12 @@ export default function HeroSlider() {
 
       {/* Scroll Indicator */}
       <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20"
+        animate={{ y: [0, 12, 0] }}
+        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 hidden md:flex"
       >
-        <div className="w-6 h-10 border-2 border-white/40 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-pulse"></div>
+        <div className="w-7 h-11 border-2 border-white/50 rounded-full flex justify-center backdrop-blur-sm">
+          <div className="w-1.5 h-3 bg-white/70 rounded-full mt-2"></div>
         </div>
       </motion.div>
     </section>
