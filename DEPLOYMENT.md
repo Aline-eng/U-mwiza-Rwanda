@@ -7,7 +7,7 @@
 1. **Create Render Account**: Go to [render.com](https://render.com) and sign up
 2. **Create PostgreSQL Database**:
    - Click "New +" → "PostgreSQL"
-   - Name: `umwiza-rwanda-db`
+   - Name: `umwizarwandadb` (no special characters)
    - Copy the **Internal Database URL** (starts with `postgresql://`)
 
 3. **Deploy Backend**:
@@ -25,11 +25,15 @@
    ```
    NODE_ENV=production
    PORT=10000
-   DATABASE_URL=<your-postgres-internal-url>
-   JWT_ACCESS_SECRET=umwiza-super-secret-jwt-key-2024
-   JWT_REFRESH_SECRET=umwiza-refresh-secret-key-2024
+   DATABASE_URL=<your-postgres-internal-url-from-render>
+   JWT_ACCESS_SECRET=<generate-random-64-char-string>
+   JWT_REFRESH_SECRET=<generate-different-random-64-char-string>
    CORS_ORIGIN=*
    ```
+   
+   **⚠️ SECURITY**: Generate strong random secrets:
+   - Use: `openssl rand -hex 32` or online generator
+   - Never use the example secrets in production
 
 ### Frontend Deployment (Vercel)
 
