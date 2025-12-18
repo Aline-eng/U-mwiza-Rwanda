@@ -1,11 +1,12 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { AuthRequest } from '../middleware/auth'
 
 const prisma = new PrismaClient()
 
-export const getEducationRecords = async (req: Request, res: Response): Promise<void> => {
+export const getEducationRecords = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { childId, academicYear } = req.query
+    const { childId, academicYear, term } = req.query
     
     const where: any = {}
     
@@ -14,7 +15,11 @@ export const getEducationRecords = async (req: Request, res: Response): Promise<
     }
     
     if (academicYear) {
-      where.academicYear = academicYear as string
+      where.academicYear = academicYear
+    }
+    
+    if (term) {
+      where.term = term
     }
 
     const records = await prisma.educationRecord.findMany({
@@ -30,10 +35,7 @@ export const getEducationRecords = async (req: Request, res: Response): Promise<
           }
         }
       },
-      orderBy: [
-        { academicYear: 'desc' },
-        { term: 'desc' }
-      ]
+      orderBy: { createdAt: 'desc' }
     })
 
     res.json({
@@ -50,7 +52,7 @@ export const getEducationRecords = async (req: Request, res: Response): Promise<
   }
 }
 
-export const createEducationRecord = async (req: Request, res: Response): Promise<void> => {
+export const createEducationRecord = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const {
       childId,
@@ -59,18 +61,26 @@ export const createEducationRecord = async (req: Request, res: Response): Promis
       gradeLevel,
       schoolName,
       attendancePercentage,
-      overallGrade,
       overallPercentage,
-      rankInClass,
+      mathGrade,
+      englishGrade,
+      scienceGrade,
+      socialStudiesGrade,
+      classRank,
       totalStudents,
-      teacherName,
       teacherComments,
-      subjects,
       achievements,
       challenges
     } = req.body
 
     const userId = req.user?.id
+
+    const subjects = {
+      math: mathGrade ? parseFloat(mathGrade) : null,
+      english: englishGrade ? parseFloat(englishGrade) : null,
+      science: scienceGrade ? parseFloat(scienceGrade) : null,
+      socialStudies: socialStudiesGrade ? parseFloat(socialStudiesGrade) : null
+    }
 
     const record = await prisma.educationRecord.create({
       data: {
@@ -79,12 +89,10 @@ export const createEducationRecord = async (req: Request, res: Response): Promis
         term,
         gradeLevel,
         schoolName,
-        attendancePercentage,
-        overallGrade,
-        overallPercentage,
-        rankInClass,
-        totalStudents,
-        teacherName,
+        attendancePercentage: attendancePercentage ? parseFloat(attendancePercentage) : null,
+        overallPercentage: overallPercentage ? parseFloat(overallPercentage) : null,
+        rankInClass: classRank ? parseInt(classRank) : null,
+        totalStudents: totalStudents ? parseInt(totalStudents) : null,
         teacherComments,
         subjects,
         achievements,

@@ -1,17 +1,26 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { AuthRequest } from '../middleware/auth'
 
 const prisma = new PrismaClient()
 
-export const getBudgets = async (req: Request, res: Response): Promise<void> => {
+export const getBudgets = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { familyId, status, budgetPeriod } = req.query
+    const { familyId, status, period } = req.query
     
     const where: any = {}
     
-    if (familyId) where.familyId = familyId as string
-    if (status) where.status = status
-    if (budgetPeriod) where.budgetPeriod = budgetPeriod as string
+    if (familyId) {
+      where.familyId = familyId as string
+    }
+    
+    if (status) {
+      where.status = status
+    }
+    
+    if (period) {
+      where.period = period
+    }
 
     const budgets = await prisma.budget.findMany({
       where,
@@ -40,27 +49,34 @@ export const getBudgets = async (req: Request, res: Response): Promise<void> => 
   }
 }
 
-export const createBudget = async (req: Request, res: Response): Promise<void> => {
+export const createBudget = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const {
       familyId,
-      budgetPeriod,
-      totalAmount,
-      currency = 'RWF',
-      categories,
-      explanation
+      period,
+      educationAmount,
+      healthAmount,
+      nutritionAmount,
+      housingAmount,
+      description,
+      justification
     } = req.body
 
     const userId = req.user?.id
+    const totalAmount = educationAmount + healthAmount + nutritionAmount + housingAmount
 
     const budget = await prisma.budget.create({
       data: {
         familyId,
-        budgetPeriod,
+        budgetPeriod: period,
         totalAmount,
-        currency,
-        categories,
-        explanation,
+        categories: {
+          education: educationAmount,
+          health: healthAmount,
+          nutrition: nutritionAmount,
+          housing: housingAmount
+        },
+        explanation: description || justification || '',
         status: 'DRAFT',
         submittedBy: userId
       },
@@ -88,7 +104,7 @@ export const createBudget = async (req: Request, res: Response): Promise<void> =
   }
 }
 
-export const submitBudget = async (req: Request, res: Response): Promise<void> => {
+export const submitBudget = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params
     const userId = req.user?.id
@@ -103,7 +119,8 @@ export const submitBudget = async (req: Request, res: Response): Promise<void> =
       include: {
         family: {
           include: {
-            community: true
+            community: true,
+            children: true
           }
         }
       }

@@ -8,6 +8,8 @@ import educationRoutes from './educationRoutes';
 import transactionsRoutes from './transactionsRoutes';
 import budgetsRoutes from './budgetsRoutes';
 import tasksRoutes from './tasksRoutes';
+import approvalsRoutes from './approvalsRoutes';
+import reportsRoutes from './reportsRoutes';
 
 const router = Router();
 
@@ -20,6 +22,8 @@ router.use('/education', educationRoutes);
 router.use('/transactions', transactionsRoutes);
 router.use('/budgets', budgetsRoutes);
 router.use('/tasks', tasksRoutes);
+router.use('/approvals', approvalsRoutes);
+router.use('/reports', reportsRoutes);
 
 // TODO: Add other routes as they are implemented
 // router.use('/users', userRoutes);
@@ -35,6 +39,10 @@ router.use('/tasks', tasksRoutes);
 // ✅ router.use('/transactions', transactionsRoutes);
 // ✅ router.use('/budgets', budgetsRoutes);
 // ✅ router.use('/tasks', tasksRoutes);
+
+// ✅ IMPLEMENTED:
+// ✅ router.use('/approvals', approvalsRoutes);
+// ✅ router.use('/reports', reportsRoutes);
 
 // TODO: Remaining routes
 // router.use('/events', eventRoutes);

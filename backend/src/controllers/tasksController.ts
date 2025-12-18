@@ -1,25 +1,31 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { AuthRequest } from '../middleware/auth'
 
 const prisma = new PrismaClient()
 
-export const getTasks = async (req: Request, res: Response): Promise<void> => {
+export const getTasks = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { assignedTo, status, taskType, priority } = req.query
     const userId = req.user?.id
+    const { status, priority, assignedTo } = req.query
     
-    const where: any = {}
+    let where: any = {}
     
-    // Staff can only see their own tasks
     if (req.user?.role === 'STAFF') {
       where.assignedTo = userId
-    } else if (assignedTo) {
-      where.assignedTo = assignedTo as string
     }
     
-    if (status) where.status = status
-    if (taskType) where.taskType = taskType
-    if (priority) where.priority = priority
+    if (status) {
+      where.status = status
+    }
+    
+    if (priority) {
+      where.priority = priority
+    }
+    
+    if (assignedTo && req.user?.role === 'ADMIN') {
+      where.assignedTo = assignedTo as string
+    }
 
     const tasks = await prisma.task.findMany({
       where,
@@ -39,10 +45,7 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
           }
         }
       },
-      orderBy: [
-        { priority: 'desc' },
-        { dueDate: 'asc' }
-      ]
+      orderBy: { createdAt: 'desc' }
     })
 
     res.json({
@@ -59,46 +62,80 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
   }
 }
 
-export const updateTaskStatus = async (req: Request, res: Response): Promise<void> => {
+export const createTask = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params
-    const { status, adminComments } = req.body
+    const {
+      title,
+      description,
+      assignedTo,
+      priority,
+      dueDate,
+      taskType
+    } = req.body
+
     const userId = req.user?.id
 
-    // Check if user can update this task
-    const task = await prisma.task.findUnique({
-      where: { id }
+    const task = await prisma.task.create({
+      data: {
+        title,
+        description,
+        assignedTo,
+        priority: priority || 'MEDIUM',
+        dueDate: dueDate ? new Date(dueDate) : null,
+        taskType: taskType || 'GENERAL',
+        status: 'PENDING',
+        assignedBy: userId
+      },
+      include: {
+        assignedToUser: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true
+          }
+        }
+      }
     })
 
+    res.status(201).json({
+      success: true,
+      data: task,
+      message: 'Task created successfully'
+    })
+  } catch (error) {
+    console.error('Error creating task:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create task'
+    })
+  }
+}
+
+export const updateTaskStatus = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params
+    const { status, completionNotes } = req.body
+    const userId = req.user?.id
+
+    const task = await prisma.task.findUnique({ where: { id } })
+    
     if (!task) {
-      res.status(404).json({
-        success: false,
-        message: 'Task not found'
-      })
+      res.status(404).json({ success: false, message: 'Task not found' })
       return
     }
 
     if (req.user?.role === 'STAFF' && task.assignedTo !== userId) {
-      res.status(403).json({
-        success: false,
-        message: 'You can only update your own tasks'
-      })
+      res.status(403).json({ success: false, message: 'Access denied' })
       return
-    }
-
-    const updateData: any = { status }
-    
-    if (status === 'COMPLETED') {
-      updateData.completedAt = new Date()
-    }
-    
-    if (adminComments) {
-      updateData.adminComments = adminComments
     }
 
     const updatedTask = await prisma.task.update({
       where: { id },
-      data: updateData,
+      data: {
+        status,
+        adminComments: completionNotes,
+        completedAt: status === 'COMPLETED' ? new Date() : null
+      },
       include: {
         assignedToUser: {
           select: {

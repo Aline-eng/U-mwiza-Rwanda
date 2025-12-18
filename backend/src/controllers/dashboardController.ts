@@ -1,9 +1,10 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { AuthRequest } from '../middleware/auth'
 
 const prisma = new PrismaClient()
 
-export const getStaffDashboard = async (req: Request, res: Response): Promise<void> => {
+export const getStaffDashboard = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id
     const user = await prisma.user.findUnique({
@@ -16,6 +17,8 @@ export const getStaffDashboard = async (req: Request, res: Response): Promise<vo
       return
     }
 
+    const communityId = user.communityId || ''
+
     // Get stats for staff's community
     const [
       totalChildren,
@@ -26,24 +29,24 @@ export const getStaffDashboard = async (req: Request, res: Response): Promise<vo
       pendingTasks
     ] = await Promise.all([
       prisma.child.count({
-        where: { family: { communityId: user.communityId } }
+        where: { family: { communityId } }
       }),
       prisma.budget.count({
         where: { 
-          family: { communityId: user.communityId },
+          family: { communityId },
           status: 'SUBMITTED'
         }
       }),
       prisma.healthRecord.count({
         where: {
-          child: { family: { communityId: user.communityId } },
+          child: { family: { communityId } },
           recordType: 'ILLNESS',
           recordDate: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
         }
       }),
       prisma.letter.count({
         where: {
-          child: { family: { communityId: user.communityId } },
+          child: { family: { communityId } },
           status: 'PENDING'
         }
       }),
@@ -85,7 +88,7 @@ export const getStaffDashboard = async (req: Request, res: Response): Promise<vo
   }
 }
 
-export const getAdminDashboard = async (req: Request, res: Response): Promise<void> => {
+export const getAdminDashboard = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user?.id
     const user = await prisma.user.findUnique({ where: { id: userId } })
@@ -98,14 +101,15 @@ export const getAdminDashboard = async (req: Request, res: Response): Promise<vo
     const [
       totalStaff,
       totalChildren,
-      pendingApprovals,
+      budgetCount,
+      taskCount,
       activeCommunities,
       staffPerformance,
       recentActivity
     ] = await Promise.all([
       prisma.user.count({ where: { role: 'STAFF', isActive: true } }),
       prisma.child.count({ where: { status: 'ACTIVE' } }),
-      prisma.budget.count({ where: { status: 'SUBMITTED' } }) +
+      prisma.budget.count({ where: { status: 'SUBMITTED' } }),
       prisma.task.count({ where: { status: 'PENDING' } }),
       prisma.community.count({ where: { isActive: true } }),
       prisma.user.findMany({
@@ -123,6 +127,8 @@ export const getAdminDashboard = async (req: Request, res: Response): Promise<vo
         include: { user: true }
       })
     ])
+
+    const pendingApprovals = budgetCount + taskCount
 
     res.json({
       success: true,

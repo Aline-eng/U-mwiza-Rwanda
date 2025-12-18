@@ -88,10 +88,10 @@ export default function SponsoredChildren() {
           <h1 className="text-2xl font-bold text-gray-900">Sponsored Children</h1>
           <p className="text-sm text-gray-600 mt-1">Manage and track all sponsored children in your community</p>
         </div>
-        <button className="bg-[#1D3557] text-white px-4 py-2 rounded-lg hover:bg-[#1D3557]/90 transition flex items-center gap-2">
+        <Link href="/dashboard/staff/children/add" className="bg-[#1D3557] text-white px-4 py-2 rounded-lg hover:bg-[#1D3557]/90 transition flex items-center gap-2">
           <Heart className="h-4 w-4" />
           Add Child
-        </button>
+        </Link>
       </div>
 
       <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">

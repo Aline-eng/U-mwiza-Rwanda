@@ -1,9 +1,10 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { AuthRequest } from '../middleware/auth'
 
 const prisma = new PrismaClient()
 
-export const getHealthRecords = async (req: Request, res: Response): Promise<void> => {
+export const getHealthRecords = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { childId, recordType } = req.query
     
@@ -47,7 +48,7 @@ export const getHealthRecords = async (req: Request, res: Response): Promise<voi
   }
 }
 
-export const createHealthRecord = async (req: Request, res: Response): Promise<void> => {
+export const createHealthRecord = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const {
       childId,
