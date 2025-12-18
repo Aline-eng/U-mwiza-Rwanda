@@ -1,7 +1,7 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : 'https://umwiza-rwanda-api.onrender.com/api/v1')
 
 class ApiService {
-  private getAuthHeaders() {
+  private getAuthHeaders(): Record<string, string> {
     if (typeof window === 'undefined') return {}
     
     const user = localStorage.getItem('user')
@@ -20,8 +20,9 @@ class ApiService {
     const config: RequestInit = {
       ...options,
       headers: {
+        'Content-Type': 'application/json',
         ...this.getAuthHeaders(),
-        ...options.headers,
+        ...(options.headers as Record<string, string> || {}),
       },
     }
 
