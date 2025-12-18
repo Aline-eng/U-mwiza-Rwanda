@@ -1,5 +1,33 @@
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5000/api/v1' : 'https://umwiza-rwanda-api.onrender.com/api/v1')
 
+interface Child {
+  id: string
+  childCode: string
+  firstName: string
+  lastName: string
+  dateOfBirth: string
+  gender: string
+  photoUrl?: string
+  isSponsored: boolean
+  gradeLevel?: string
+  schoolName?: string
+  status: string
+  family: {
+    familyCode: string
+    community: {
+      name: string
+    }
+  }
+  sponsor?: {
+    firstName: string
+    lastName: string
+  }
+  interests?: string
+  dreams?: string
+  healthRecords?: any[]
+  educationRecords?: any[]
+}
+
 class ApiService {
   private getAuthHeaders(): Record<string, string> {
     if (typeof window === 'undefined') return {}
@@ -63,7 +91,7 @@ class ApiService {
     return this.request(`/children/${childId}/education`)
   }
 
-  async createChild(data: any) {
+  async createChild(data: Record<string, any>) {
     try {
       return await this.request('/children', {
         method: 'POST',
@@ -93,7 +121,7 @@ class ApiService {
     }
   }
 
-  async updateChild(id: string, data: any) {
+  async updateChild(id: string, data: Record<string, any>) {
     try {
       return await this.request(`/children/${id}`, {
         method: 'PUT',
@@ -158,7 +186,7 @@ class ApiService {
     return this.request(`/health${query ? `?${query}` : ''}`)
   }
 
-  async createHealthRecord(data: any) {
+  async createHealthRecord(data: Record<string, any>) {
     return this.request('/health', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -175,7 +203,7 @@ class ApiService {
     return this.request(`/education${query ? `?${query}` : ''}`)
   }
 
-  async createEducationRecord(data: any) {
+  async createEducationRecord(data: Record<string, any>) {
     return this.request('/education', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -293,7 +321,7 @@ class ApiService {
     } catch (error) {
       console.log('Backend not available, using mock data')
       const children = await this.getMockChildren()
-      const child = children.data.find(c => c.id === id)
+      const child = children.data.find((c: Child) => c.id === id)
       
       if (!child) {
         throw new Error('Child not found')
