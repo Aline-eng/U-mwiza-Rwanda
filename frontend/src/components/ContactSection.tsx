@@ -1,9 +1,96 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { MapPin, Phone, Mail, Clock, Users, Heart } from 'lucide-react'
+import { MapPin, Phone, Mail, Clock, Users, Heart, CheckCircle, AlertCircle } from 'lucide-react'
+import { useState } from 'react'
+
+interface FormData {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  organization: string
+  subject: string
+  message: string
+  privacy: boolean
+}
+
+interface FormState {
+  isSubmitting: boolean
+  isSuccess: boolean
+  error: string | null
+}
 
 export default function ContactSection() {
+  const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    organization: '',
+    subject: '',
+    message: '',
+    privacy: false
+  })
+
+  const [formState, setFormState] = useState<FormState>({
+    isSubmitting: false,
+    isSuccess: false,
+    error: null
+  })
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }))
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    setFormState({ isSubmitting: true, isSuccess: false, error: null })
+
+    try {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
+      
+      const response = await fetch(`${API_URL}/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Failed to send message')
+      }
+
+      setFormState({ isSubmitting: false, isSuccess: true, error: null })
+      
+      // Reset form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        organization: '',
+        subject: '',
+        message: '',
+        privacy: false
+      })
+
+    } catch (error) {
+      setFormState({ 
+        isSubmitting: false, 
+        isSuccess: false, 
+        error: error instanceof Error ? error.message : 'Failed to send message. Please try again.' 
+      })
+    }
+  }
   return (
     <section id="contact" className="py-24 bg-gradient-to-br from-slate-50 via-green-50/30 to-slate-50 relative overflow-hidden">
       {/* Background Pattern */}
@@ -130,6 +217,7 @@ export default function ContactSection() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            onSubmit={handleSubmit}
             className="bg-white p-8 rounded-xl shadow-xl space-y-6 border border-slate-100"
           >
             <div className="text-center mb-6">
@@ -137,15 +225,34 @@ export default function ContactSection() {
               <p className="text-slate-600 text-sm">We typically respond within 24 hours</p>
             </div>
 
+            {/* Success Message */}
+            {formState.isSuccess && (
+              <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <p className="text-green-800 font-medium">Message sent successfully! We'll get back to you within 24 hours.</p>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {formState.error && (
+              <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                <p className="text-red-800">{formState.error}</p>
+              </div>
+            )}
+
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-slate-700 mb-2">First Name *</label>
                 <input
                   type="text"
                   name="firstName"
+                  value={formData.firstName}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
                   placeholder="John"
                   required
+                  disabled={formState.isSubmitting}
                 />
               </div>
 
@@ -154,9 +261,12 @@ export default function ContactSection() {
                 <input
                   type="text"
                   name="lastName"
+                  value={formData.lastName}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
                   placeholder="Doe"
                   required
+                  disabled={formState.isSubmitting}
                 />
               </div>
             </div>
@@ -166,9 +276,12 @@ export default function ContactSection() {
               <input
                 type="email"
                 name="email"
+                value={formData.email}
+                onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
                 placeholder="john.doe@example.com"
                 required
+                disabled={formState.isSubmitting}
               />
             </div>
 
@@ -177,8 +290,11 @@ export default function ContactSection() {
               <input
                 type="tel"
                 name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
                 placeholder="+250 XXX XXX XXX"
+                disabled={formState.isSubmitting}
               />
             </div>
 
@@ -187,8 +303,11 @@ export default function ContactSection() {
               <input
                 type="text"
                 name="organization"
+                value={formData.organization}
+                onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors"
                 placeholder="Company or organization name"
+                disabled={formState.isSubmitting}
               />
             </div>
 
@@ -196,8 +315,11 @@ export default function ContactSection() {
               <label className="block text-sm font-semibold text-slate-700 mb-2">Inquiry Type *</label>
               <select
                 name="subject"
+                value={formData.subject}
+                onChange={handleInputChange}
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors bg-white"
                 required
+                disabled={formState.isSubmitting}
               >
                 <option value="">Please select an option</option>
                 <option value="partnership">Partnership Opportunities</option>
@@ -214,10 +336,13 @@ export default function ContactSection() {
               <label className="block text-sm font-semibold text-slate-700 mb-2">Message *</label>
               <textarea
                 name="message"
+                value={formData.message}
+                onChange={handleInputChange}
                 rows={6}
                 className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors resize-none"
                 placeholder="Please provide details about your inquiry. The more information you share, the better we can assist you..."
                 required
+                disabled={formState.isSubmitting}
               />
             </div>
 
@@ -226,8 +351,11 @@ export default function ContactSection() {
                 type="checkbox"
                 id="privacy"
                 name="privacy"
+                checked={formData.privacy}
+                onChange={handleInputChange}
                 className="mt-1 h-4 w-4 text-green-600 focus:ring-green-500 border-slate-300 rounded"
                 required
+                disabled={formState.isSubmitting}
               />
               <label htmlFor="privacy" className="text-sm text-slate-600 leading-relaxed">
                 I agree to the processing of my personal data in accordance with U'mwiza Rwanda's{' '}
@@ -238,9 +366,10 @@ export default function ContactSection() {
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-4 rounded-lg hover:bg-green-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              disabled={formState.isSubmitting}
+              className="w-full bg-green-600 text-white py-4 rounded-lg hover:bg-green-700 transition-all duration-200 font-semibold text-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Send Secure Message
+              {formState.isSubmitting ? 'Sending Message...' : 'Send Secure Message'}
             </button>
 
               <p className="text-xs text-slate-500 text-center mt-4">

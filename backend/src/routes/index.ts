@@ -10,6 +10,7 @@ import budgetsRoutes from './budgetsRoutes';
 import tasksRoutes from './tasksRoutes';
 import approvalsRoutes from './approvalsRoutes';
 import reportsRoutes from './reportsRoutes';
+import contactRoutes from './contact';
 
 const router = Router();
 
@@ -24,6 +25,7 @@ router.use('/budgets', budgetsRoutes);
 router.use('/tasks', tasksRoutes);
 router.use('/approvals', approvalsRoutes);
 router.use('/reports', reportsRoutes);
+router.use('/', contactRoutes);
 
 // TODO: Add other routes as they are implemented
 // router.use('/users', userRoutes);

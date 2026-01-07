@@ -14,7 +14,11 @@
     "prisma:studio": "prisma studio",
     "seed": "ts-node prisma/seed.ts"
   },
-  "keywords": ["humanitarian", "sponsorship", "api"],
+  "keywords": [
+    "humanitarian",
+    "sponsorship",
+    "api"
+  ],
   "author": "U'mwiza Rwanda",
   "license": "MIT",
   "dependencies": {
@@ -25,6 +29,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/multer": "^1.4.11",
     "@types/node": "^20.10.5",
+    "@types/nodemailer": "^7.0.4",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -33,6 +38,7 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^7.0.12",
     "prisma": "^5.7.0",
     "socket.io": "^4.6.0",
     "ts-node": "^10.9.2",
