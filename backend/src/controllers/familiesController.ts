@@ -1,36 +1,33 @@
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { PrismaClient } from '@prisma/client'
+import { AuthRequest } from '../middleware/auth'
+import { z } from 'zod'
 
 const prisma = new PrismaClient()
 
-export const getFamilies = async (req: Request, res: Response): Promise<void> => {
+const createFamilySchema = z.object({
+  familyCode: z.string().min(1, 'Family code is required'),
+  fatherName: z.string().optional(),
+  motherName: z.string().optional(),
+  guardianName: z.string().optional(),
+  address: z.string().optional(),
+  phone: z.string().optional(),
+  communityId: z.string().min(1, 'Community ID is required')
+})
+
+export const getFamilies = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { communityId, status } = req.query
-    
+
     const where: any = {}
-    
-    if (communityId) {
-      where.communityId = communityId as string
-    }
-    
-    if (status) {
-      where.status = status
-    }
+    if (communityId) where.communityId = communityId
+    if (status) where.status = status
 
     const families = await prisma.family.findMany({
       where,
       include: {
         community: true,
-        children: {
-          include: {
-            sponsor: true
-          }
-        },
-        _count: {
-          select: {
-            children: true
-          }
-        }
+        children: true
       },
       orderBy: { createdAt: 'desc' }
     })
@@ -49,7 +46,52 @@ export const getFamilies = async (req: Request, res: Response): Promise<void> =>
   }
 }
 
-export const getFamilyById = async (req: Request, res: Response): Promise<void> => {
+export const createFamily = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const validatedData = createFamilySchema.parse(req.body)
+
+    const family = await prisma.family.create({
+      data: {
+        familyCode: validatedData.familyCode,
+        fatherName: validatedData.fatherName,
+        motherName: validatedData.motherName,
+        guardianName: validatedData.guardianName,
+        address: validatedData.address,
+        phone: validatedData.phone,
+        communityId: validatedData.communityId,
+        enrollmentDate: new Date(),
+        status: 'ACTIVE'
+      },
+      include: {
+        community: true,
+        children: true
+      }
+    })
+
+    res.status(201).json({
+      success: true,
+      data: family,
+      message: 'Family created successfully'
+    })
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: error.errors
+      })
+      return
+    }
+
+    console.error('Error creating family:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create family'
+    })
+  }
+}
+
+export const getFamilyById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params
 
@@ -57,25 +99,7 @@ export const getFamilyById = async (req: Request, res: Response): Promise<void> 
       where: { id },
       include: {
         community: true,
-        children: {
-          include: {
-            sponsor: true,
-            healthRecords: {
-              orderBy: { recordDate: 'desc' },
-              take: 3
-            },
-            educationRecords: {
-              orderBy: { createdAt: 'desc' },
-              take: 3
-            }
-          }
-        },
-        budgets: {
-          orderBy: { createdAt: 'desc' }
-        },
-        actionPlans: {
-          orderBy: { year: 'desc' }
-        }
+        children: true
       }
     })
 
@@ -96,67 +120,6 @@ export const getFamilyById = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to fetch family'
-    })
-  }
-}
-
-export const createFamily = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const {
-      communityId,
-      fatherName,
-      fatherAge,
-      fatherOccupation,
-      motherName,
-      motherAge,
-      motherOccupation,
-      guardianName,
-      guardianRelationship,
-      address,
-      phone,
-      housingType,
-      incomeLevel,
-      notes
-    } = req.body
-
-    // Generate family code
-    const familyCount = await prisma.family.count()
-    const familyCode = `FAM${String(familyCount + 1).padStart(3, '0')}`
-
-    const family = await prisma.family.create({
-      data: {
-        communityId,
-        familyCode,
-        fatherName,
-        fatherAge,
-        fatherOccupation,
-        motherName,
-        motherAge,
-        motherOccupation,
-        guardianName,
-        guardianRelationship,
-        address,
-        phone,
-        housingType,
-        incomeLevel,
-        enrollmentDate: new Date(),
-        notes
-      },
-      include: {
-        community: true
-      }
-    })
-
-    res.status(201).json({
-      success: true,
-      data: family,
-      message: 'Family created successfully'
-    })
-  } catch (error) {
-    console.error('Error creating family:', error)
-    res.status(500).json({
-      success: false,
-      message: 'Failed to create family'
     })
   }
 }

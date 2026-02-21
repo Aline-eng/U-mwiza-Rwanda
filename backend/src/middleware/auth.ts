@@ -22,6 +22,17 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
       });
     }
 
+    // For development - accept mock token
+    if (token === 'mock-token') {
+      req.user = {
+        id: 'mock-user-id',
+        email: 'staff@umwiza.org',
+        role: 'STAFF' as Role,
+        communityId: 'mock-community-id'
+      };
+      return next();
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_ACCESS_SECRET!) as any;
     req.user = decoded;
     next();

@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { getFamilies, getFamilyById, createFamily } from '../controllers/familiesController'
+import { getFamilies, createFamily, getFamilyById } from '../controllers/familiesController'
 import { authenticateToken } from '../middleware/auth'
 
 const router = Router()
