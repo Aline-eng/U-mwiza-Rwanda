@@ -41,15 +41,25 @@ export default function SponsoredChildren() {
   const loadChildren = async () => {
     try {
       setLoading(true)
-      // Use mock data for now, switch to real API when backend is ready
-      const response = await apiService.getMockChildren()
-      setChildren(response.data)
+      setError('')
+      const response = await apiService.getChildren()
+      setChildren(response.data || [])
     } catch (err) {
-      setError('Failed to load children')
+      setError('Failed to load children. Please check your connection and try again.')
+      setChildren([])
       console.error('Error loading children:', err)
     } finally {
       setLoading(false)
     }
+  }
+
+  const getChildImage = (firstName: string) => {
+    const name = firstName.toLowerCase()
+    if (name.includes('amani')) return '/images/amani.jpg'
+    if (name.includes('david')) return '/images/david.jpg'
+    if (name.includes('grace')) return '/images/grace.jpg'
+    if (name.includes('jean')) return '/images/jean.jpg'
+    return 'https://via.placeholder.com/80x80/e2e8f0/64748b?text=Child'
   }
 
   const calculateAge = (dateOfBirth: string) => {
@@ -75,12 +85,13 @@ export default function SponsoredChildren() {
     return (
       <div className="text-center py-12">
         <p className="text-red-600 mb-4">{error}</p>
-        <button onClick={loadChildren} className="bg-[#1D3557] text-white px-4 py-2 rounded-lg">
+        <button onClick={loadChildren} className="bg-[#1D3557] text-white px-4 py-2 rounded-lg hover:bg-[#1D3557]/90 transition">
           Try Again
         </button>
       </div>
     )
   }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -111,42 +122,54 @@ export default function SponsoredChildren() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {children.map((child) => (
-          <Link key={child.id} href={`/dashboard/staff/children/${child.id}`}>
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2A9D8F] transition cursor-pointer">
-              <div className="flex items-start gap-4">
-                <img 
-                  src={child.photoUrl || '/api/placeholder/80/80'} 
-                  alt={`${child.firstName} ${child.lastName}`} 
-                  className="w-20 h-20 rounded-lg object-cover" 
-                />
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{child.firstName} {child.lastName}</h3>
-                  <p className="text-sm text-gray-600">ID: {child.childCode}</p>
-                  <div className="mt-3 space-y-1">
-                    <p className="text-xs text-gray-600">Age: {calculateAge(child.dateOfBirth)} • {child.gender}</p>
-                    <p className="text-xs text-gray-600">{child.schoolName || 'No school assigned'}</p>
-                    <p className="text-xs text-gray-600">{child.family.community.name}</p>
-                  </div>
-                  <div className="flex items-center gap-2 mt-3">
-                    <span className={`px-3 py-1 text-xs font-medium rounded-full ${
-                      child.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                    }`}>
-                      {child.status}
-                    </span>
-                    {child.isSponsored && (
-                      <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
-                        Sponsored
+      {children.length === 0 ? (
+        <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
+          <Heart className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No sponsored children found</h3>
+          <p className="text-gray-600 mb-6">Get started by adding your first sponsored child to the system.</p>
+          <Link href="/dashboard/staff/children/add" className="bg-[#1D3557] text-white px-6 py-3 rounded-lg hover:bg-[#1D3557]/90 transition inline-flex items-center gap-2">
+            <Heart className="h-4 w-4" />
+            Add First Child
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {children.map((child) => (
+            <Link key={child.id} href={`/dashboard/staff/children/${child.id}`}>
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2A9D8F] transition cursor-pointer">
+                <div className="flex items-start gap-4">
+                  <img 
+                    src={child.photoUrl || getChildImage(child.firstName)} 
+                    alt={`${child.firstName} ${child.lastName}`} 
+                    className="w-20 h-20 rounded-lg object-cover" 
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900">{child.firstName} {child.lastName}</h3>
+                    <p className="text-sm text-gray-600">ID: {child.childCode}</p>
+                    <div className="mt-3 space-y-1">
+                      <p className="text-xs text-gray-600">Age: {calculateAge(child.dateOfBirth)} • {child.gender}</p>
+                      <p className="text-xs text-gray-600">{child.schoolName || 'No school assigned'}</p>
+                      <p className="text-xs text-gray-600">{child.family?.community?.name || 'No community'}</p>
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <span className={`px-3 py-1 text-xs font-medium rounded-full ${
+                        child.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                      }`}>
+                        {child.status}
                       </span>
-                    )}
+                      {child.isSponsored && (
+                        <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full">
+                          Sponsored
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

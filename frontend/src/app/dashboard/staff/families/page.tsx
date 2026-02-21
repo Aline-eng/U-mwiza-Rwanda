@@ -3,6 +3,7 @@
 import { Users, Search, Filter, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { apiService } from '@/services/api'
 
 interface Family {
   id: string
@@ -34,36 +35,12 @@ export default function FamilyProfiles() {
   const loadFamilies = async () => {
     try {
       setLoading(true)
-      // Mock data
-      const mockFamilies: Family[] = [
-        {
-          id: '1',
-          familyCode: 'FAM001',
-          motherName: 'Marie Uwase',
-          fatherName: 'Jean Baptiste',
-          address: 'Kigali Village, Sector 3',
-          totalChildren: 3,
-          status: 'ACTIVE',
-          community: { name: 'Kigali Village' },
-          children: [
-            { firstName: 'Amani', lastName: 'Uwase', isSponsored: true },
-            { firstName: 'Jean', lastName: 'Mugabo', isSponsored: true }
-          ]
-        },
-        {
-          id: '2',
-          familyCode: 'FAM002',
-          guardianName: 'Grace Mukamana',
-          address: 'Musanze Center, Cell Cyuve',
-          totalChildren: 2,
-          status: 'ACTIVE',
-          community: { name: 'Musanze District' },
-          children: [
-            { firstName: 'Grace', lastName: 'Ishimwe', isSponsored: false }
-          ]
-        }
-      ]
-      setFamilies(mockFamilies)
+      const response = await apiService.getFamilies()
+      setFamilies(response.data || [])
+    } catch (error) {
+      console.error('Error loading families:', error)
+      // Fallback to empty array if API fails
+      setFamilies([])
     } finally {
       setLoading(false)
     }

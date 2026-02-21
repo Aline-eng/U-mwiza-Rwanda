@@ -2,6 +2,7 @@
 
 import { Activity, Search, Filter, Plus, Calendar, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { apiService } from '@/services/api'
 
 interface HealthRecord {
   id: string
@@ -29,40 +30,11 @@ export default function HealthRecords() {
   const loadHealthRecords = async () => {
     try {
       setLoading(true)
-      // Mock data
-      const mockRecords: HealthRecord[] = [
-        {
-          id: '1',
-          recordDate: '2025-01-15',
-          recordType: 'CHECKUP',
-          title: 'Regular Health Checkup',
-          description: 'Annual health screening - all indicators normal',
-          child: { firstName: 'Amani', lastName: 'Uwase', childCode: 'CH001' },
-          hospitalName: 'Kigali Health Center',
-          status: 'COMPLETED'
-        },
-        {
-          id: '2',
-          recordDate: '2024-12-10',
-          recordType: 'VACCINATION',
-          title: 'Flu Vaccination',
-          description: 'Annual flu vaccine administered successfully',
-          child: { firstName: 'Jean', lastName: 'Mugabo', childCode: 'CH002' },
-          hospitalName: 'Hope Medical Center',
-          status: 'COMPLETED'
-        },
-        {
-          id: '3',
-          recordDate: '2025-01-20',
-          recordType: 'ILLNESS',
-          title: 'Malaria Treatment',
-          description: 'Treated for malaria, recovery progressing well',
-          child: { firstName: 'Grace', lastName: 'Ishimwe', childCode: 'CH003' },
-          hospitalName: 'Musanze Hospital',
-          status: 'ONGOING'
-        }
-      ]
-      setRecords(mockRecords)
+      const response = await apiService.getHealthRecords()
+      setRecords(response.data || [])
+    } catch (error) {
+      console.error('Error loading health records:', error)
+      setRecords([])
     } finally {
       setLoading(false)
     }

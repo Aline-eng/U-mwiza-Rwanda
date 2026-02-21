@@ -2,177 +2,182 @@
 
 import Navbar from '@/components/Navbar'
 import HeroSlider from '@/components/HeroSlider'
+import LandingImpactGrid from '@/components/LandingImpactGrid'
 import AboutSection from '@/components/AboutSection'
 import ContactSection from '@/components/ContactSection'
 import TestimonialsSection from '@/components/TestimonialsSection'
 import Footer from '@/components/Footer'
 import { motion } from 'framer-motion'
-import { Heart, GraduationCap, HelpingHand } from 'lucide-react'
+import { Heart, GraduationCap, Shield, ArrowRight, CheckCircle } from 'lucide-react'
+
+const programs = [
+  {
+    title: 'Family Sponsorship',
+    description:
+      'Connect caring sponsors with vulnerable families to provide essential support — food, shelter, education. Build lasting relationships that create hope and stability across generations.',
+    icon: Heart,
+    impact: '250+ families supported',
+    color: '#3B82F6',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/20',
+    text: 'text-blue-400',
+    features: ['Monthly support packages', 'Progress updates', 'Direct communication'],
+  },
+  {
+    title: 'Education Excellence',
+    description:
+      'Empower bright students from disadvantaged backgrounds with scholarships, school supplies, and mentorship. Every child deserves the opportunity to reach their full potential.',
+    icon: GraduationCap,
+    impact: '120 students sponsored',
+    color: '#10B981',
+    bg: 'bg-emerald-500/10',
+    border: 'border-emerald-500/20',
+    text: 'text-emerald-400',
+    features: ['Full tuition coverage', 'School materials', 'Mentorship programs'],
+  },
+  {
+    title: 'Healthcare Access',
+    description:
+      'Ensure families have access to essential medical care, preventive services, and health education. Good health is the foundation of a brighter future for every family.',
+    icon: Shield,
+    impact: '5 communities served',
+    color: '#F59E0B',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+    text: 'text-amber-400',
+    features: ['Medical check-ups', 'Preventive care', 'Health education'],
+  },
+]
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#020617]">
       <Navbar />
       <HeroSlider />
-
-      {/* Impact Stats */}
-      <section id="impact" className="py-24 gradient-warm relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-pattern-dots opacity-40"></div>
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-primary-100 text-primary-700 px-4 py-2 rounded-full text-sm font-semibold mb-6"
-            >
-              <Heart className="h-4 w-4" />
-              Our Impact
-            </motion.div>
-            <h2 className="text-5xl md:text-6xl font-heading font-bold text-gray-900 mb-6">Transforming Lives Together</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">Every number represents a family's journey toward hope, dignity, and a brighter future</p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {[
-              { number: '250+', label: 'Families Supported', icon: '👨‍👩‍👧‍👦', color: 'from-primary-500 to-primary-600' },
-              { number: '120', label: 'Students Sponsored', icon: '🎓', color: 'from-secondary-500 to-secondary-600' },
-              { number: '5', label: 'Communities Served', icon: '🏘️', color: 'from-accent-500 to-accent-600' },
-              { number: '50+', label: 'Active Volunteers', icon: '🤝', color: 'from-primary-600 to-secondary-600' }
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="group text-center bg-white rounded-2xl p-8 shadow-charity hover-lift cursor-default border border-gray-100"
-              >
-                <div className="text-5xl mb-5 group-hover:scale-110 transition-transform duration-300">{stat.icon}</div>
-                <div className={`text-5xl md:text-6xl font-heading font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent mb-3`}>{stat.number}</div>
-                <div className="text-base text-gray-600 font-semibold">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      <LandingImpactGrid />
       <AboutSection />
 
-      <TestimonialsSection />
-
       {/* Programs Section */}
-      <section id="programs" className="py-24 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section
+        id="programs"
+        className="py-28 bg-[#0F172A] relative overflow-hidden"
+        aria-labelledby="programs-heading"
+      >
+        <div className="absolute inset-0 bg-grid-pattern opacity-20 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-20"
+            className="text-center mb-16"
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 bg-secondary-100 text-secondary-700 px-4 py-2 rounded-full text-sm font-semibold mb-6"
-            >
-              <GraduationCap className="h-4 w-4" />
+            <div className="inline-flex items-center gap-2 badge-emerald mb-5">
+              <GraduationCap className="h-3.5 w-3.5" strokeWidth={2} />
               What We Do
-            </motion.div>
-            <h2 className="text-5xl md:text-6xl font-heading font-bold text-gray-900 mb-6">Programs That Transform</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Comprehensive support that addresses the root causes of poverty and builds sustainable futures</p>
+            </div>
+            <h2
+              id="programs-heading"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 tracking-tight"
+            >
+              Programs That Transform
+              {/* <span className="bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
+                
+              </span> */}
+            </h2>
+            <p className="text-slate-400 text-lg max-w-3xl mx-auto">
+              Comprehensive support that addresses root causes of poverty and builds sustainable, dignified futures.
+            </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                title: 'Family Sponsorship',
-                description: 'Connect caring sponsors with vulnerable families to provide essential support including food, shelter, and educational materials. Build lasting relationships that create hope and stability.',
-                icon: HelpingHand,
-                impact: '250+ families supported',
-                color: 'from-red-500 to-pink-500'
-              },
-              {
-                title: 'Education Excellence',
-                description: 'Empower bright students from disadvantaged backgrounds with scholarships, school supplies, and mentorship programs. Every child deserves the opportunity to reach their full potential.',
-                icon: GraduationCap,
-                impact: '120 students sponsored',
-                color: 'from-green-500 to-teal-500'
-              },
-              {
-                title: 'Healthcare Access',
-                description: 'Ensure families have access to essential medical care, preventive services, and health education. Good health is the foundation of a brighter future for every family.',
-                icon: Heart,
-                impact: '5 communities served',
-                color: 'from-orange-500 to-red-500'
-              }
-            ].map((program, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-                className="bg-white p-8 rounded-2xl shadow-charity hover-lift cursor-pointer group relative overflow-hidden border border-gray-100"
-              >
-                <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${program.color}`}></div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {programs.map((program, index) => {
+              const Icon = program.icon
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.12, duration: 0.6 }}
+                  className="glass-card-hover rounded-2xl p-7 group flex flex-col"
+                >
+                  {/* Top accent line */}
+                  <div
+                    className="h-0.5 w-full rounded-full mb-7 opacity-60"
+                    style={{ background: `linear-gradient(90deg, ${program.color}, transparent)` }}
+                  />
 
-                <div className={`inline-flex p-4 rounded-xl bg-gradient-to-r ${program.color} mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                  <program.icon className="h-8 w-8 text-white" />
-                </div>
+                  <div className={`inline-flex p-3 rounded-xl ${program.bg} border ${program.border} mb-6 w-fit`}>
+                    <Icon className={`h-6 w-6 ${program.text}`} strokeWidth={2} />
+                  </div>
 
-                <h3 className="text-2xl font-heading font-bold text-gray-900 mb-4 group-hover:text-primary-600 transition-colors">
-                  {program.title}
-                </h3>
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors tracking-tight">
+                    {program.title}
+                  </h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1">{program.description}</p>
 
-                <p className="text-gray-600 mb-6 leading-relaxed">
-                  {program.description}
-                </p>
+                  <div className="space-y-2 mb-6">
+                    {program.features.map((f) => (
+                      <div key={f} className="flex items-center gap-2 text-sm">
+                        <CheckCircle
+                          className="h-3.5 w-3.5 flex-shrink-0"
+                          style={{ color: program.color }}
+                          strokeWidth={2}
+                        />
+                        <span className="text-slate-400">{f}</span>
+                      </div>
+                    ))}
+                  </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <span className="text-sm font-bold text-secondary-700 bg-secondary-50 px-4 py-2 rounded-full">
-                    {program.impact}
-                  </span>
-                  <motion.button
-                    whileHover={{ x: 4 }}
-                    className="text-primary-600 font-semibold hover:text-primary-700 transition-colors flex items-center gap-1"
-                  >
-                    Learn More →
-                  </motion.button>
-                </div>
-              </motion.div>
-            ))}
+                  <div className="flex items-center justify-between pt-5 border-t border-slate-800">
+                    <span
+                      className="text-xs font-bold px-3 py-1.5 rounded-full"
+                      style={{
+                        backgroundColor: `${program.color}15`,
+                        color: program.color,
+                        border: `1px solid ${program.color}30`,
+                      }}
+                    >
+                      {program.impact}
+                    </span>
+                    <button
+                      className={`${program.text} text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all`}
+                      aria-label={`Learn more about ${program.title}`}
+                    >
+                      Learn More
+                      <ArrowRight className="h-3.5 w-3.5" strokeWidth={2} />
+                    </button>
+                  </div>
+                </motion.div>
+              )
+            })}
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mt-16"
+            className="text-center mt-14"
           >
-            <p className="text-lg text-gray-600 mb-8 font-medium">Ready to make a lasting impact?</p>
-            <motion.button
-              type='button'
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() =>
-                window.open("https://www.unbound.org/about/approach", "_blank", "noopener,noreferrer")
-              }
-              className="btn-primary text-lg px-10 py-5"
+            <p className="text-slate-500 mb-6 font-medium">Ready to make a lasting impact?</p>
+            <motion.a
+              href="https://www.unbound.org/about/approach"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              className="btn-electric text-base px-10 py-4 rounded-xl inline-flex items-center gap-2"
             >
               Start Your Journey Today
-            </motion.button>
+              <ArrowRight className="h-4 w-4" strokeWidth={2} />
+            </motion.a>
           </motion.div>
         </div>
       </section>
 
+      <TestimonialsSection />
       <ContactSection />
       <Footer />
     </div>

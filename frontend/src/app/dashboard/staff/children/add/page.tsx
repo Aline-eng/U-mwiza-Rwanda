@@ -31,10 +31,12 @@ export default function AddChildPage() {
       if (response.success) {
         alert('Child added successfully!')
         router.push('/dashboard/staff/children')
+      } else {
+        throw new Error(response.message || 'Failed to create child')
       }
     } catch (error) {
       console.error('Error adding child:', error)
-      alert('Failed to add child. Please try again.')
+      alert('Failed to add child. Please check all required fields and try again.')
     } finally {
       setLoading(false)
     }
@@ -205,10 +207,21 @@ export default function AddChildPage() {
                   type="file"
                   accept="image/*"
                   className="hidden"
+                  id="photo-upload"
                   onChange={(e) => {
-                    console.log('File selected:', e.target.files?.[0])
+                    const file = e.target.files?.[0]
+                    if (file) {
+                      console.log('File selected:', file.name)
+                      // TODO: Handle file upload
+                    }
                   }}
                 />
+                <label
+                  htmlFor="photo-upload"
+                  className="mt-2 bg-[#1D3557] text-white px-4 py-2 rounded-lg hover:bg-[#1D3557]/90 transition cursor-pointer inline-block"
+                >
+                  Choose File
+                </label>
               </div>
             </div>
           </div>

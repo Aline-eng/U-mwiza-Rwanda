@@ -11,14 +11,22 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  const sidebarWidth = sidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'
 
   return (
     <ProtectedRoute allowedRoles={['STAFF', 'ADMIN']}>
-      <div className="min-h-screen bg-[#F8F9FA]">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <div className="lg:pl-64">
+      <div className="min-h-screen bg-[#020617]">
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          collapsed={sidebarCollapsed}
+          onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+        />
+        <div className={`${sidebarWidth} transition-all duration-300`}>
           <Header onMenuClick={() => setSidebarOpen(true)} />
-          <main className="p-4 lg:p-8">
+          <main className="p-4 lg:p-7 min-h-[calc(100vh-64px)]">
             {children}
           </main>
         </div>

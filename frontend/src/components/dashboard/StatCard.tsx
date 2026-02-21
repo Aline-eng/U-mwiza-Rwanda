@@ -1,37 +1,63 @@
 import { LucideIcon } from 'lucide-react'
+import { TrendingUp, TrendingDown } from 'lucide-react'
+import MiniSparkline from './MiniSparkline'
 
 interface StatCardProps {
   title: string
   value: string | number
   icon: LucideIcon
   trend?: string
-  color?: 'blue' | 'yellow' | 'green' | 'red'
+  trendUp?: boolean
+  color?: 'blue' | 'yellow' | 'green' | 'red' | 'purple'
+  sparkData?: number[]
 }
 
-const colorClasses: Record<'blue' | 'yellow' | 'green' | 'red', string> = {
-  blue: 'bg-primary-100 text-primary-600',
-  yellow: 'bg-yellow-100 text-yellow-600',
-  green: 'bg-secondary-100 text-secondary-600',
-  red: 'bg-red-100 text-red-600',
+const colorMap: Record<string, { bg: string; border: string; icon: string; spark: string }> = {
+  blue:   { bg: 'bg-blue-500/10',   border: 'border-blue-500/20',   icon: 'text-blue-400',   spark: '#3B82F6' },
+  green:  { bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', icon: 'text-emerald-400', spark: '#10B981' },
+  yellow: { bg: 'bg-amber-500/10',  border: 'border-amber-500/20',  icon: 'text-amber-400',  spark: '#F59E0B' },
+  red:    { bg: 'bg-red-500/10',    border: 'border-red-500/20',    icon: 'text-red-400',    spark: '#EF4444' },
+  purple: { bg: 'bg-purple-500/10', border: 'border-purple-500/20', icon: 'text-purple-400', spark: '#A78BFA' },
 }
 
-export default function StatCard({ title, value, icon: Icon, trend, color = 'blue' }: StatCardProps) {
+export default function StatCard({
+  title,
+  value,
+  icon: Icon,
+  trend,
+  trendUp = true,
+  color = 'blue',
+  sparkData,
+}: StatCardProps) {
+  const c = colorMap[color]
+
   return (
-    <div className="bg-white rounded-xl p-6 shadow-charity border border-gray-100 hover-lift transition-smooth group">
+    <div className="glass-card-hover rounded-2xl p-6 flex flex-col gap-4" role="article" aria-label={`${title}: ${value}`}>
       <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-semibold text-gray-600 mb-2 uppercase tracking-wide">{title}</p>
-          <p className="text-4xl font-heading font-bold text-gray-900 mb-1">{value}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">{title}</p>
+          <p className="text-3xl font-bold text-white tracking-tight">{value}</p>
           {trend && (
-            <p className="text-xs font-semibold text-secondary-600 bg-secondary-50 inline-block px-2 py-1 rounded-full mt-2">
+            <div className={`inline-flex items-center gap-1 mt-2 text-xs font-semibold ${trendUp ? 'text-emerald-400' : 'text-red-400'}`}>
+              {trendUp ? (
+                <TrendingUp className="h-3 w-3" strokeWidth={2} />
+              ) : (
+                <TrendingDown className="h-3 w-3" strokeWidth={2} />
+              )}
               {trend}
-            </p>
+            </div>
           )}
         </div>
-        <div className={`p-4 rounded-xl ${colorClasses[color]} group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
-          <Icon className="h-6 w-6" />
+        <div className={`p-3 rounded-xl ${c.bg} border ${c.border} flex-shrink-0`}>
+          <Icon className={`h-5 w-5 ${c.icon}`} strokeWidth={2} />
         </div>
       </div>
+
+      {sparkData && sparkData.length > 1 && (
+        <div className="h-10 -mx-1">
+          <MiniSparkline data={sparkData} color={c.spark} height={40} />
+        </div>
+      )}
     </div>
   )
 }

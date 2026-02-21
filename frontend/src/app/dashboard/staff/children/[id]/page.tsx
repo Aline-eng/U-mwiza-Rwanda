@@ -42,6 +42,15 @@ export default function ChildProfile() {
   const params = useParams()
   const childId = params.id as string
 
+  const getChildImage = (firstName: string) => {
+    const name = firstName.toLowerCase()
+    if (name.includes('amani')) return '/images/amani.jpg'
+    if (name.includes('david')) return '/images/david.jpg'
+    if (name.includes('grace')) return '/images/grace.jpg'
+    if (name.includes('jean')) return '/images/jean.jpg'
+    return 'https://via.placeholder.com/128x128/e2e8f0/64748b?text=Child'
+  }
+
   useEffect(() => {
     if (childId) {
       loadChild()
@@ -51,10 +60,11 @@ export default function ChildProfile() {
   const loadChild = async () => {
     try {
       setLoading(true)
-      const response = await apiService.getMockChildById(childId)
+      setError('')
+      const response = await apiService.getChildById(childId)
       setChild(response.data)
     } catch (err) {
-      setError('Failed to load child profile')
+      setError('Failed to load child profile. Please check your connection and try again.')
       console.error('Error loading child:', err)
     } finally {
       setLoading(false)
@@ -111,7 +121,7 @@ export default function ChildProfile() {
         <div className="h-32 bg-gradient-to-r from-[#1D3557] to-[#2A9D8F]"></div>
         <div className="px-8 pb-6">
           <div className="flex flex-col sm:flex-row items-start gap-6 -mt-16">
-            <img src={child.photoUrl || '/images/placeholder.jpg'} alt={`${child.firstName} ${child.lastName}`} className="w-32 h-32 rounded-xl border-4 border-white shadow-lg object-cover" />
+            <img src={child.photoUrl || getChildImage(child.firstName)} alt={`${child.firstName} ${child.lastName}`} className="w-32 h-32 rounded-xl border-4 border-white shadow-lg object-cover" />
             <div className="flex-1 mt-16 sm:mt-0">
               <div className="flex items-start justify-between">
                 <div>
@@ -123,7 +133,7 @@ export default function ChildProfile() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
                 <div>
                   <p className="text-xs text-gray-600">Community</p>
-                  <p className="font-semibold text-gray-900">{child.family.community.name}</p>
+                  <p className="font-semibold text-gray-900">{child.family?.community?.name || 'Not assigned'}</p>
                 </div>
                 <div>
                   <p className="text-xs text-gray-600">School</p>
@@ -186,7 +196,7 @@ export default function ChildProfile() {
                   </div>
                   <div className="flex justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-600">Family ID</span>
-                    <span className="font-medium">{child.family.familyCode}</span>
+                    <span className="font-medium">{child.family?.familyCode || 'Not assigned'}</span>
                   </div>
                   {child.interests && (
                     <div className="flex justify-between py-2 border-b border-gray-100">
@@ -220,7 +230,7 @@ export default function ChildProfile() {
                   </div>
                   <div className="flex justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-600">Community</span>
-                    <span className="font-medium">{child.family.community.name}</span>
+                    <span className="font-medium">{child.family?.community?.name || 'Not assigned'}</span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-600">Status</span>
